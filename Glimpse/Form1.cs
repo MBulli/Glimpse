@@ -25,6 +25,10 @@ namespace Glimpse
         {
             InitializeComponent();
 
+#if DEBUG
+            this.TopMost = false;
+#endif
+
             views.Add(new Views.ImageView());
             views.Add(new Views.TextView());
             views.Add(new Views.DirectoryView());

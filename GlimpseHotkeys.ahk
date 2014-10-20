@@ -1,5 +1,5 @@
-#IfWinActive ahk_class CabinetWClass
-;#IfWinActive Desktop
+#IfWinActive ahk_class CabinetWClass ; Explorer
+#IfWinActive ahk_class Progman       ; Desktop
 #space::
 WinGet, Hwnd
 Run "Glimpse.exe" %Hwnd%

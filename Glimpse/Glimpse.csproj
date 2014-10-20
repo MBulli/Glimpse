@@ -118,7 +118,8 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <None Include="GlimpseHotkeys.ahk">
+    <None Include="..\GlimpseHotkeys.ahk">
+      <Link>GlimpseHotkeys.ahk</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="packages.config" />
