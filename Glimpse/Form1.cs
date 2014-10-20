@@ -59,10 +59,34 @@ namespace Glimpse
 
         public void LaunchWithArguments(string[] args)
         {
+            this.FileToPreview = PreviewFileFromCommandLine(args);
+        }
+
+        /// <summary>
+        /// Updates the preview with the specified file in the commandline arguments.
+        /// It's safe to call this method from thread other the main thread
+        /// </summary>
+        /// <param name="args"></param>
+        public void DisplayPreview(string[] args)
+        {
+            if (this.InvokeRequired)
+            {
+                Action action = () => { DisplayPreview(args); };
+                this.Invoke(action);
+            }
+            else
+            {
+                this.FileToPreview = PreviewFileFromCommandLine(args);
+                DisplayFile(this.FileToPreview);
+            }
+        }
+
+        private string PreviewFileFromCommandLine(string[] args)
+        {
             if (args == null)
                 throw new ArgumentNullException("args");
             if (args.Length == 0)
-                return;
+                return null;
 
             if (args[0].StartsWith("0x"))
             {
@@ -71,16 +95,17 @@ namespace Glimpse
                     long target = Convert.ToInt64(args[0], 16);
                     IntPtr hwnd = new IntPtr(target);
 
-                    this.FileToPreview = GetExplorerSelectedItemPath(hwnd);
+                    return GetExplorerSelectedItemPath(hwnd);
                 }
                 catch
                 {
                     MessageBox.Show("Invalid cmd parameter");
+                    return null;
                 }
             }
             else
             {
-                this.FileToPreview = args[0];
+                return args[0];
             }
         }
 
