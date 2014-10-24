@@ -5,7 +5,6 @@ using System.IO.Pipes;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Application = System.Windows.Forms.Application;
 
 namespace Glimpse
 {
@@ -13,51 +12,21 @@ namespace Glimpse
     {
         private const string GlimpsePipeName = "Glimpse_F90238A6-4DE1-4D5B-B5A5-3BCC43EDBDCE";
 
-        private Form1 mainForm;
-
-        public void Run(string[] args)
+        public void RunAsMaster(Action<string[]> callback)
         {
-            if (TryBecomeMaster())
-            {
-                RunApplication(args);
-            }
-            else
-            {
-                RunAsSlave(args);
-            }
-        }
+            if (callback == null)
+                throw new ArgumentNullException("callback");
 
-        private void RunApplication(string[] args)
-        {
-            if (this.mainForm != null)
-                throw new InvalidOperationException("Application is already running.");
-
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-
-            this.mainForm = new Form1();
-            if (args != null)
-            {
-                mainForm.LaunchWithArguments(args);
-            }
-
-            Application.Run(mainForm);
-        }
-
-        private bool TryBecomeMaster()
-        {
-            if (IsInstanceRunning())
-                return false;
+            if (IsMasterInstanceRunning())
+                throw new InvalidOperationException("Theres already a master instance running.");
 
             Task.Run(() =>
             {
-                StartPipeServer();
+                StartPipeServer(callback);
             });
-
-            return true;
         }
 
-        private void StartPipeServer()
+        private void StartPipeServer(Action<string[]> callback)
         {
             try
             {
@@ -72,9 +41,9 @@ namespace Glimpse
                             CommandStream cmdStream = new CommandStream(pipeServer);
                             string[] args = cmdStream.ReceiveArgs();
 
-                            if (args != null)
+                            if (args != null && callback != null)
                             {
-                                mainForm.DisplayPreview(args);
+                                callback(args);
                             }
                         }
                         finally
@@ -90,7 +59,7 @@ namespace Glimpse
             }
         }
 
-        private void RunAsSlave(string[] args)
+        public void RunAsSlave(string[] args)
         {
             if (args == null)
                 return;
@@ -118,7 +87,7 @@ namespace Glimpse
             }
         }
 
-        private bool IsInstanceRunning()
+        public bool IsMasterInstanceRunning()
         {
             return File.Exists(@"\\.\pipe\" + GlimpsePipeName);
         }
