@@ -1,9 +1,33 @@
 ﻿<Window
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:Views="clr-namespace:Glimpse.Views" x:Class="Glimpse.MainWindow"
-        Title="MainWindow" Height="350" Width="525">
+        xmlns:views="clr-namespace:Glimpse.Views" 
+        xmlns:vm="clr-namespace:Glimpse.ViewModels"
+        xmlns:pv="clr-namespace:Glimpse.ViewModels.Previews"
+        xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+        x:Class="Glimpse.MainWindow"
+        Title="MainWindow" Height="231.741" Width="409.727">
+    <Window.DataContext>
+        <vm:MainViewModel />
+    </Window.DataContext>
+    <!-- ViewModel -> View Mapping -->
+    <Window.Resources>
+        <DataTemplate DataType="{x:Type pv:ImagePreviewModel}">
+            <MediaElement Source="{Binding Source}" />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type pv:LocalDrivePreviewModel}">
+            <views:LocalDriveView />
+        </DataTemplate>
+    </Window.Resources>
+    <Window.InputBindings>
+        <KeyBinding Key="Escape" Command="{Binding ApplicationExitCommand}" />
+    </Window.InputBindings>
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding ShowPreviewCommand}" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
     <Grid>
-        
+        <ContentControl Content="{Binding CurrentPreviewModel}" />
     </Grid>
 </Window>

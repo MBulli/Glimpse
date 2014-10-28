@@ -10,7 +10,7 @@ namespace Glimpse.ViewModels.Previews
     {
         private string driveName;
         private string driveSpace;
-        private int driveFreeSpace;
+        private double driveFreeSpace;
 
         public string DriveName
         {
@@ -24,7 +24,7 @@ namespace Glimpse.ViewModels.Previews
             set { driveSpace = value; OnPropertyChanged(); }
         }
 
-        public int DriveFreeSpace
+        public double DriveFreeSpace
         {
             get { return driveFreeSpace; }
             set { driveFreeSpace = value; OnPropertyChanged(); }
@@ -35,12 +35,9 @@ namespace Glimpse.ViewModels.Previews
             throw new NotImplementedException();
         }
 
-        public System.Windows.FrameworkElement GetPreview(string filename)
+        public void ShowPreview(string filename)
         {
-            Views.LocalDriveView view = new Views.LocalDriveView();
-            view.DataContext = this;
-
-            return view;
+            this.DriveName = filename;
         }
 
         public System.Windows.Size PreferredPreviewSize(System.Windows.Size currentSize)

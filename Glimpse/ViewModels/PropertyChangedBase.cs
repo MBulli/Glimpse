@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Glimpse.ViewModels
 {
-    class PropertyChangedBase : INotifyPropertyChanged
+    public class PropertyChangedBase : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
 

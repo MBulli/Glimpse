@@ -1,0 +1,6 @@
+﻿<pv:LocalDrivePreviewModel xmlns:pv="clr-namespace:Glimpse.ViewModels.Previews" 
+                           DriveName="Local Drive (X:\)"
+                           DriveSpace="X GB of Y GB"
+                           DriveFreeSpace="0.60"
+                           />
+
