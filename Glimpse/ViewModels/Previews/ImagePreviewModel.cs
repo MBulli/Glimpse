@@ -13,6 +13,8 @@ namespace Glimpse.ViewModels.Previews
     {
         private static readonly string[] supportedExtensions = new[] { ".png", ".jpg", ".jpeg", ".bmp", ".gif", ".tiff" };
 
+        private BitmapFrame image;
+
         private string source;
         public string Source
         {
@@ -29,11 +31,14 @@ namespace Glimpse.ViewModels.Previews
         public void ShowPreview(string filename)
         {
             this.Source = filename;
+
+            BitmapDecoder decoder = BitmapDecoder.Create(new Uri(filename), BitmapCreateOptions.None, BitmapCacheOption.None);
+            this.image = decoder.Frames[0];
         }
 
-        public System.Windows.Size PreferredPreviewSize(System.Windows.Size currentSize)
+        public System.Windows.Size? PreferredPreviewSize(System.Windows.Size currentSize)
         {
-            throw new NotImplementedException();
+            return new System.Windows.Size(image.PixelWidth, image.PixelHeight);   
         }
     }
 }

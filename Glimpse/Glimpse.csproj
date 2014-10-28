@@ -63,6 +63,8 @@
     </ApplicationDefinition>
     <Compile Include="ExplorerAdapter.cs" />
     <Compile Include="Extensions.cs" />
+    <Compile Include="Interop\NativeMethods.cs" />
+    <Compile Include="Models\Screen.cs" />
     <Compile Include="Sandbox.cs" />
     <Compile Include="SingleInstanceApplication.cs" />
     <Compile Include="ViewModels\IPreviewModel.cs" />

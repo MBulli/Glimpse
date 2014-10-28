@@ -1,31 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
+using Glimpse.Models;
+
+using Rect = System.Windows.Rect;
 using Size = System.Windows.Size;
+using Point = System.Windows.Point;
+using Application = System.Windows.Application;
 
 namespace Glimpse.ViewModels
 {
     public class MainViewModel : PropertyChangedBase
     {
         private List<IPreviewModel> previews;
-
-        private double windowHeight;
-        public double WindowHeight
-        {
-            get { return windowHeight; }
-            set { windowHeight = value; OnPropertyChanged(); }
-        }
-
-        private double windowWidth;
-        public double WindowWidth
-        {
-            get { return windowWidth; }
-            set { windowWidth = value; OnPropertyChanged(); }
-        }
 
         private IPreviewModel currentPreviewModel;
         public IPreviewModel CurrentPreviewModel
@@ -92,18 +84,18 @@ namespace Glimpse.ViewModels
 
         public void ShowPreview(string[] args)
         {
-            
+            string fileToPreview = PreviewFileFromCommandLine(args);
+            DisplayFile(fileToPreview);
         }
-
 
         private string PreviewFileFromCommandLine(string[] args)
         {
             if (args == null)
                 throw new ArgumentNullException("args");
-            if (args.Length == 0)
+            if (args.Length == 1) // first argument is exe name
                 return null;
 
-            if (args[0].StartsWith("0x"))
+            if (args[1].StartsWith("0x"))
             {
                 try
                 {
@@ -120,7 +112,7 @@ namespace Glimpse.ViewModels
             }
             else
             {
-                return args[0];
+                return args[1];
             }
         }
 
@@ -146,16 +138,21 @@ namespace Glimpse.ViewModels
             if (!FileSystemItemExist(path))
                 return;
 
-            foreach (var view in this.previews)
+            foreach (var preview in this.previews)
             {
-                if (view.CanCreatePreview(path))
+                if (preview.CanCreatePreview(path))
                 {
-                    this.CurrentPreviewModel = view;
-                    view.ShowPreview(path);
-
-                    // 5. Ask for preffered Size and set it
-                    //Size prefferedSize = view.PreferredPreviewSize(this.viewContainer.ClientSize);
-                    //SetPrefferedPreviewSize(prefferedSize);
+                    this.CurrentPreviewModel = preview;
+                    preview.ShowPreview(path);
+                    
+                    // Ask for preffered Size and set it
+                    Size wndSize = Application.Current.MainWindow.GetClientSize();
+                    Size? prefferedSize = preview.PreferredPreviewSize(wndSize);
+                    if (prefferedSize != null)
+                    {
+                        SetPrefferedPreviewSize(prefferedSize.Value);    
+                    }
+                    
                     break;
                 }
             }
@@ -163,37 +160,44 @@ namespace Glimpse.ViewModels
 
         private void SetPrefferedPreviewSize(Size prefferedSize)
         {
-            //var screen = Screen.FromControl(this);
-            //var maxSize = Rectangle.Inflate(screen.Bounds, -100, -100).Size;
+            var screen = Screen.FromMainWindow();
+            var maxBounds = Rect.Inflate(screen.WorkingArea, -100, -100);
 
-            //Size wndSize = prefferedSize;
+            Size wndSize = prefferedSize;
 
-            //if (prefferedSize.Width > maxSize.Width)
-            //{
-            //    float ratio = maxSize.Width / (float)prefferedSize.Width;
+            if (prefferedSize.Width > maxBounds.Width)
+            {
+                double ratio = maxBounds.Width / prefferedSize.Width;
 
-            //    int w = (int)Math.Floor(prefferedSize.Width * ratio);
-            //    int h = (int)Math.Floor(prefferedSize.Height * ratio);
+                int w = (int)Math.Floor(prefferedSize.Width * ratio);
+                int h = (int)Math.Floor(prefferedSize.Height * ratio);
 
-            //    wndSize = new Size(w, h);
-            //}
-            //else if (prefferedSize.Height > maxSize.Height)
-            //{
-            //    float ratio = maxSize.Height / (float)prefferedSize.Height;
+                wndSize = new Size(w, h);
+            }
+            else if (prefferedSize.Height > maxBounds.Height)
+            {
+                double ratio = maxBounds.Height / prefferedSize.Height;
 
-            //    int w = (int)Math.Floor(prefferedSize.Width * ratio);
-            //    int h = (int)Math.Floor(prefferedSize.Height * ratio);
+                int w = (int)Math.Floor(prefferedSize.Width * ratio);
+                int h = (int)Math.Floor(prefferedSize.Height * ratio);
 
-            //    wndSize = new Size(w, h);
-            //}
+                wndSize = new Size(w, h);
+            }
 
-            //this.ClientSize = new Size(wndSize.Width + this.Padding.Horizontal,
-            //                           wndSize.Height + this.Padding.Vertical);
+            // ensure visible
+            // (We break MVVM on purpose because binding these values doesn't work well)
+            Rect wndBounds = Application.Current.MainWindow.GetBounds();
 
-            //// ensure visible
-            //int xOffset = Math.Max(0, this.Bounds.Right - screen.Bounds.Width);
-            //int yOffset = Math.Max(0, this.Bounds.Bottom - screen.Bounds.Height);
-            //this.Location = Point.Subtract(this.Location, new Size(xOffset, yOffset));
+            double xOffset = Math.Min(0.0, maxBounds.Right - (wndBounds.X + wndSize.Width));
+            double yOffset = Math.Min(0.0, maxBounds.Bottom - (wndBounds.Y + wndSize.Height));
+
+            Application.Current.MainWindow.SetBounds(new Rect()
+            {
+                X = wndBounds.X + xOffset,
+                Y = wndBounds.Y + yOffset,
+                Width = wndSize.Width,
+                Height = wndSize.Height
+            });
         }
 
         private bool FileSystemItemExist(string path)

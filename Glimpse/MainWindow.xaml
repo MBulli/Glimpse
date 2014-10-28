@@ -6,14 +6,17 @@
         xmlns:pv="clr-namespace:Glimpse.ViewModels.Previews"
         xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
         x:Class="Glimpse.MainWindow"
-        Title="MainWindow" Height="231.741" Width="409.727">
+        Title="MainWindow"
+        WindowStartupLocation="CenterScreen"
+        >
     <Window.DataContext>
         <vm:MainViewModel />
     </Window.DataContext>
     <!-- ViewModel -> View Mapping -->
     <Window.Resources>
         <DataTemplate DataType="{x:Type pv:ImagePreviewModel}">
-            <MediaElement Source="{Binding Source}" />
+            <!--TODO custom preview for gifs-->
+            <Image Source="{Binding Source}" />
         </DataTemplate>
         <DataTemplate DataType="{x:Type pv:LocalDrivePreviewModel}">
             <views:LocalDriveView />

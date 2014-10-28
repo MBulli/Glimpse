@@ -18,7 +18,7 @@ namespace Glimpse.ViewModels.Previews
             throw new NotImplementedException();
         }
 
-        public System.Windows.Size PreferredPreviewSize(System.Windows.Size currentSize)
+        public System.Windows.Size? PreferredPreviewSize(System.Windows.Size currentSize)
         {
             throw new NotImplementedException();
         }

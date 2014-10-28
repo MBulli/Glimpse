@@ -40,7 +40,7 @@ namespace Glimpse.ViewModels.Previews
             this.DriveName = filename;
         }
 
-        public System.Windows.Size PreferredPreviewSize(System.Windows.Size currentSize)
+        public System.Windows.Size? PreferredPreviewSize(System.Windows.Size currentSize)
         {
             throw new NotImplementedException();
         }

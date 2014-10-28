@@ -14,6 +14,6 @@ namespace Glimpse.ViewModels
         bool CanCreatePreview(string filename);
         void ShowPreview(string filename);
 
-        System.Windows.Size PreferredPreviewSize(System.Windows.Size currentSize);
+        System.Windows.Size? PreferredPreviewSize(System.Windows.Size currentSize);
     }
 }
