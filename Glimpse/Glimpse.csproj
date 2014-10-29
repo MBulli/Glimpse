@@ -64,6 +64,7 @@
     <Compile Include="ExplorerAdapter.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="Interop\NativeMethods.cs" />
+    <Compile Include="Models\GlimpseItem.cs" />
     <Compile Include="Models\Screen.cs" />
     <Compile Include="Sandbox.cs" />
     <Compile Include="SingleInstanceApplication.cs" />
@@ -73,6 +74,7 @@
     <Compile Include="ViewModels\Previews\DirectoryPreviewModel.cs" />
     <Compile Include="ViewModels\Previews\ImagePreviewModel.cs" />
     <Compile Include="ViewModels\Previews\LocalDrivePreviewModel.cs" />
+    <Compile Include="ViewModels\Previews\RtfPreviewModel.cs" />
     <Compile Include="ViewModels\Previews\TextPreviewModel.cs" />
     <Compile Include="ViewModels\Previews\WindowsPreviewModel.cs" />
     <Compile Include="ViewModels\PropertyChangedBase.cs" />

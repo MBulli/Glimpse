@@ -45,10 +45,10 @@ namespace Glimpse.Interop
             }
         }
 
-        public static PerceivedType GetPerceivedType(string filenameOrExtension)
+        public static int GetPerceivedType(string filenameOrExtension)
         {
             string ext = Path.GetExtension(filenameOrExtension);
-            PerceivedType result;
+            int result;
             uint flags;
 
             uint hresult = AssocGetPerceivedType(ext, out result, out flags, null);
@@ -57,7 +57,7 @@ namespace Glimpse.Interop
             {
                 Debug.WriteLine("Inside Win32.GetPerceivedType(): AssocGetPerceivedType failed with hresult 0x{0:X} with file or ext '{1}'",
                                   hresult, filenameOrExtension);
-                return PerceivedType.Unspecified;
+                return -2;
             }
             else
             {
@@ -69,7 +69,7 @@ namespace Glimpse.Interop
         [DllImport("Shlwapi.dll", SetLastError = true, CharSet = CharSet.Auto)]
         static extern uint AssocGetPerceivedType(
             string pszExt,
-            out PerceivedType ptype,
+            out int ptype,
             out uint pflag,
             [Out] StringBuilder ppszType);
 
@@ -126,30 +126,6 @@ namespace Glimpse.Interop
             DelegateExecute,
             SupportedUriProtocols,
             Max,
-        }
-
-        public enum PerceivedType
-        {
-            /// <summary>
-            /// The file's perceived type as defined in the registry is not a known type.
-            /// </summary>
-            Custom = -3,
-            /// <summary>
-            /// The file does not have a perceived type.
-            /// </summary>
-            Unspecified = -2,
-            Folder = -1,
-            Unknown = 0,
-            Text = 1,
-            Image = 2,
-            Audio = 3,
-            Video = 4,
-            Compressed = 5,
-            Document = 6,
-            System = 7,
-            Application = 8,
-            Gamemedia = 9,
-            Contacts = 10
         }
     }
 }

@@ -18,6 +18,11 @@
             <!--TODO custom preview for gifs-->
             <Image Source="{Binding Source}" />
         </DataTemplate>
+        <DataTemplate DataType="{x:Type pv:TextPreviewModel}">
+            <ScrollViewer>
+                <TextBox Text="{Binding Text}" TextWrapping="Wrap" IsReadOnly="True" />
+            </ScrollViewer>
+        </DataTemplate>
         <DataTemplate DataType="{x:Type pv:LocalDrivePreviewModel}">
             <views:LocalDriveView />
         </DataTemplate>

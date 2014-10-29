@@ -30,14 +30,14 @@ namespace Glimpse.ViewModels.Previews
             set { driveFreeSpace = value; OnPropertyChanged(); }
         }
 
-        public bool CanCreatePreview(string filename)
+        public bool CanCreatePreview(Models.GlimpseItem item)
         {
-            throw new NotImplementedException();
+            return item.IsLocalDrive;
         }
 
-        public void ShowPreview(string filename)
+        public void ShowPreview(Models.GlimpseItem item)
         {
-            this.DriveName = filename;
+            this.DriveName = item.FullPath;
         }
 
         public System.Windows.Size? PreferredPreviewSize(System.Windows.Size currentSize)

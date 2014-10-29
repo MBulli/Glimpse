@@ -22,17 +22,16 @@ namespace Glimpse.ViewModels.Previews
             set { source = value; OnPropertyChanged(); }
         }
 
-        public bool CanCreatePreview(string filename)
+        public bool CanCreatePreview(Models.GlimpseItem item)
         {
-            var ext = Path.GetExtension(filename).ToLower();
-            return supportedExtensions.Contains(ext);
+            return supportedExtensions.Contains(item.FileExtension);
         }
 
-        public void ShowPreview(string filename)
+        public void ShowPreview(Models.GlimpseItem item)
         {
-            this.Source = filename;
+            this.Source = item.FullPath;
 
-            BitmapDecoder decoder = BitmapDecoder.Create(new Uri(filename), BitmapCreateOptions.None, BitmapCacheOption.None);
+            BitmapDecoder decoder = BitmapDecoder.Create(item.Uri, BitmapCreateOptions.None, BitmapCacheOption.None);
             this.image = decoder.Frames[0];
         }
 

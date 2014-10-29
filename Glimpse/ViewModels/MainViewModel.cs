@@ -67,7 +67,8 @@ namespace Glimpse.ViewModels
             previews = new List<IPreviewModel>();
 
             previews.Add(new Previews.ImagePreviewModel());
-            //previews.Add(new Previews.TextPreviewModel());
+            previews.Add(new Previews.TextPreviewModel());
+            previews.Add(new Previews.RtfPreviewModel());
             //previews.Add(new Previews.DirectoryPreviewModel());
             previews.Add(new Previews.LocalDrivePreviewModel());
 
@@ -138,12 +139,14 @@ namespace Glimpse.ViewModels
             if (!FileSystemItemExist(path))
                 return;
 
+            GlimpseItem item = new GlimpseItem(path);
+
             foreach (var preview in this.previews)
             {
-                if (preview.CanCreatePreview(path))
+                if (preview.CanCreatePreview(item))
                 {
                     this.CurrentPreviewModel = preview;
-                    preview.ShowPreview(path);
+                    preview.ShowPreview(item);
                     
                     // Ask for preffered Size and set it
                     Size wndSize = Application.Current.MainWindow.GetClientSize();

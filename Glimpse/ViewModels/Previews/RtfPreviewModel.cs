@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace Glimpse.ViewModels.Previews
 {
-    class DefaultPreviewModel : IPreviewModel
+    class RtfPreviewModel : PropertyChangedBase, IPreviewModel
     {
         public bool CanCreatePreview(Models.GlimpseItem item)
         {
-            throw new NotImplementedException();
+            return item.FileExtension == ".rtf";
         }
 
         public void ShowPreview(Models.GlimpseItem item)

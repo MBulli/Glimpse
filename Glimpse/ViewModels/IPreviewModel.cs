@@ -11,8 +11,8 @@ namespace Glimpse.ViewModels
         // Multi file selection: Image ThumbnailImage(string filename);
         // void WillDismissPreview(DismissReason[App Quit/selected other file])
 
-        bool CanCreatePreview(string filename);
-        void ShowPreview(string filename);
+        bool CanCreatePreview(Models.GlimpseItem item);
+        void ShowPreview(Models.GlimpseItem item);
 
         System.Windows.Size? PreferredPreviewSize(System.Windows.Size currentSize);
     }

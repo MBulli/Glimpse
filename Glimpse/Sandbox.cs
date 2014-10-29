@@ -146,7 +146,7 @@ namespace Glimpse
                     string ctype = subKey.GetValue("Content Type", "") as string;
 
                     var ptype = Glimpse.Interop.Win32.GetPerceivedType(subKeyName);
-                    string ptypeStr = ptype == Interop.Win32.PerceivedType.Unspecified ? string.Empty : ptype.ToString();
+                    string ptypeStr = ptype == -2 ? string.Empty : ptype.ToString();
                     
                     Guid previewGUID = Glimpse.Interop.Win32.PreviewHandlerGuid(subKeyName);
                     string preview = previewGUID == Guid.Empty ? string.Empty : previewGUID.ToString();
