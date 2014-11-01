@@ -3,7 +3,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:c="clr-namespace:Glimpse.Views.Converter"
              mc:Ignorable="d" 
+             d:DataContext="{d:DesignData Source=./DesignData/DirectoryViewDesignData.xaml}"
              d:DesignHeight="180" d:DesignWidth="600">
     <Grid>
         <Grid.RowDefinitions>
@@ -18,10 +20,10 @@
             <ColumnDefinition Width="93*"/>
         </Grid.ColumnDefinitions>
 
-        <Image Grid.RowSpan="4" Margin="10" />
+        <Image Grid.RowSpan="4" Margin="10" Source="{Binding Thumbnail}" />
         
         <Viewbox Grid.Column="1" Grid.Row="0" Grid.ColumnSpan="2" Margin="10" HorizontalAlignment="Left" >
-            <TextBlock TextWrapping="NoWrap" Text="Folder Name" />
+            <TextBlock TextWrapping="NoWrap" Text="{Binding Foldername}" />
         </Viewbox>
 
         <Viewbox Grid.Column="1" Grid.Row="1" Margin="10" HorizontalAlignment="Right" >
@@ -35,13 +37,27 @@
         </Viewbox>
 
         <Viewbox Grid.Column="2" Grid.Row="1" Margin="10" HorizontalAlignment="Left" >
-            <TextBlock TextWrapping="NoWrap" Text="142 MB" />
+            <TextBlock TextWrapping="NoWrap" >
+                <TextBlock.Text>
+                    <MultiBinding StringFormat="{} {0} ({1:#,#} Bytes)">
+                        <Binding Path="TotalSize" Converter="{c:ByteCountConverter}" />
+                        <Binding Path="TotalSize" />
+                    </MultiBinding>
+                </TextBlock.Text>
+            </TextBlock>
         </Viewbox>
         <Viewbox Grid.Column="2" Grid.Row="2" Margin="10" HorizontalAlignment="Left" >
-            <TextBlock TextWrapping="NoWrap" Text="123 Files, 456 Folders" />
+            <TextBlock TextWrapping="NoWrap" >
+                <TextBlock.Text>
+                    <MultiBinding StringFormat="{}{0:#,#} Files, {1:#,#} Folders">
+                        <Binding Path="FileCount" />
+                        <Binding Path="FolderCount" />
+                    </MultiBinding>
+                </TextBlock.Text>
+            </TextBlock>
         </Viewbox>
         <Viewbox Grid.Column="2" Grid.Row="3" Margin="10" HorizontalAlignment="Left" >
-            <TextBlock TextWrapping="NoWrap" Text="Sunday 12.11.14" />
+            <TextBlock TextWrapping="NoWrap" Text="{Binding CreationTime, StringFormat=F}" />
         </Viewbox>
 
     </Grid>

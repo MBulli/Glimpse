@@ -12,7 +12,7 @@
     <Window.DataContext>
         <vm:MainViewModel />
     </Window.DataContext>
-    <!-- ViewModel -> View Mapping -->
+    <!-- ViewModel / View Mapping -->
     <Window.Resources>
         <DataTemplate DataType="{x:Type pv:ImagePreviewModel}">
             <!--TODO custom preview for gifs-->
@@ -25,6 +25,9 @@
         </DataTemplate>
         <DataTemplate DataType="{x:Type pv:LocalDrivePreviewModel}">
             <views:LocalDriveView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type pv:DirectoryPreviewModel}">
+            <views:DirectoryView />
         </DataTemplate>
     </Window.Resources>
     <Window.InputBindings>
