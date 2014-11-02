@@ -1,35 +1,51 @@
-﻿using System;
+﻿using Microsoft.WindowsAPICodePack.Shell;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media.Imaging;
 
 namespace Glimpse.ViewModels.Previews
 {
     class LocalDrivePreviewModel : PropertyChangedBase, IPreviewModel
     {
+        private BitmapSource thumbnail;
+        public BitmapSource Thumbnail
+        {
+            get { return thumbnail; }
+            set { thumbnail = value; OnPropertyChanged(); }
+        }
+        
         private string driveName;
-        private string driveSpace;
-        private double driveFreeSpace;
-
         public string DriveName
         {
             get { return driveName; }
             set { driveName = value; OnPropertyChanged(); }
         }
 
-        public string DriveSpace
+        private long freeBytes;
+        public long FreeBytes
         {
-            get { return driveSpace; }
-            set { driveSpace = value; OnPropertyChanged(); }
+            get { return freeBytes; }
+            set { freeBytes = value; OnPropertyChanged(); }
         }
 
-        public double DriveFreeSpace
+        private long totalBytes;
+        public long TotalBytes
         {
-            get { return driveFreeSpace; }
-            set { driveFreeSpace = value; OnPropertyChanged(); }
+            get { return totalBytes; }
+            set { totalBytes = value; OnPropertyChanged(); }
         }
-
+        
+        private double freeSpaceRatio;
+        public double FreeSpaceRatio
+        {
+            get { return freeSpaceRatio; }
+            set { freeSpaceRatio = value; OnPropertyChanged(); }
+        }
+        
         public bool CanCreatePreview(Models.GlimpseItem item)
         {
             return item.IsLocalDrive;
@@ -37,12 +53,22 @@ namespace Glimpse.ViewModels.Previews
 
         public void ShowPreview(Models.GlimpseItem item)
         {
-            this.DriveName = item.FullPath;
+            using (var sf = ShellFolder.FromParsingName(item.FullPath))
+            {
+                this.Thumbnail = sf.Thumbnail.ExtraLargeBitmapSource;
+                this.DriveName = sf.GetDisplayName(DisplayNameType.Default);
+            }
+
+            DriveInfo di = new DriveInfo(item.FullPath);
+            this.FreeBytes = di.TotalFreeSpace;
+            this.TotalBytes = di.TotalSize;
+
+            this.FreeSpaceRatio = (di.TotalFreeSpace / (double)di.TotalSize);
         }
 
         public System.Windows.Size? PreferredPreviewSize(System.Windows.Size currentSize)
         {
-            throw new NotImplementedException();
+            return null;
         }
     }
 }

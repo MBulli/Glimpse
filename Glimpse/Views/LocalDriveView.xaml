@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:c="clr-namespace:Glimpse.Views.Converter"
              mc:Ignorable="d" 
              d:DesignHeight="199.403" d:DesignWidth="752.239"
              d:DataContext="{d:DesignData Source=./DesignData/LocalDriveViewDesignData.xaml}"
@@ -17,15 +18,21 @@
             <ColumnDefinition Width="180"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <Image Grid.RowSpan="3" Margin="10" />
-
+        
+        <Image Grid.RowSpan="3" Margin="10" Source="{Binding Thumbnail}" />
         <Viewbox Grid.Column="1"  Grid.Row="0" Margin="10" HorizontalAlignment="Left" >
             <TextBlock TextWrapping="NoWrap" Text="{Binding DriveName}" />
         </Viewbox>
-        <ProgressBar Grid.Column="1" Grid.Row="1" Margin="10" Value="{Binding DriveFreeSpace}" Minimum="0" Maximum="1"  />
+        <ProgressBar Grid.Column="1" Grid.Row="1" Margin="10" Value="{Binding FreeSpaceRatio}" Minimum="0" Maximum="1"  />
         <Viewbox Grid.Column="1" Grid.Row="2" Margin="10" HorizontalAlignment="Left">
-            <TextBlock TextWrapping="NoWrap" Text="{Binding DriveSpace}" />
+            <TextBlock TextWrapping="NoWrap">
+                <TextBlock.Text>
+                    <MultiBinding StringFormat="{}{0} of {1}">
+                        <Binding Path="FreeBytes" Converter="{c:ByteCountConverter RoundToInteger=False}" />
+                        <Binding Path="TotalBytes" Converter="{c:ByteCountConverter RoundToInteger=True}" />
+                    </MultiBinding>
+                </TextBlock.Text>
+            </TextBlock>
         </Viewbox>
-
     </Grid>
 </UserControl>
