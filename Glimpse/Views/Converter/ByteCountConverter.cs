@@ -7,7 +7,7 @@ using System.Windows.Data;
 
 namespace Glimpse.Views.Converter
 {
-    class ByteCountConverter : BaseConverter, IValueConverter
+    class ByteCountConverter : BaseConverter
     {
         public ByteCountConverter()
         {
@@ -18,7 +18,7 @@ namespace Glimpse.Views.Converter
             get; set;
         }
 
-        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        public override object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             if (targetType != typeof(string) && targetType != typeof(object))
                 return null;
@@ -59,7 +59,7 @@ namespace Glimpse.Views.Converter
                 return string.Format(ci, "{0:0.##} {1}", result, unit);
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        public override object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             return null;
         }

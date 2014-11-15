@@ -81,6 +81,7 @@
     <Compile Include="ViewModels\RelayCommand.cs" />
     <Compile Include="Views\Converter\BaseConverter.cs" />
     <Compile Include="Views\Converter\ByteCountConverter.cs" />
+    <Compile Include="Views\Converter\NullToVisibilityConverter.cs" />
     <Compile Include="Views\DirectoryView.xaml.cs">
       <DependentUpon>DirectoryView.xaml</DependentUpon>
     </Compile>

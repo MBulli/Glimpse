@@ -5,6 +5,7 @@
         xmlns:vm="clr-namespace:Glimpse.ViewModels"
         xmlns:pv="clr-namespace:Glimpse.ViewModels.Previews"
         xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+        xmlns:c="clr-namespace:Glimpse.Views.Converter"
         x:Class="Glimpse.MainWindow"
         Title="MainWindow"
         WindowStartupLocation="CenterScreen"
@@ -39,6 +40,7 @@
         </i:EventTrigger>
     </i:Interaction.Triggers>
     <Grid>
-        <ContentControl Content="{Binding CurrentPreviewModel}" />
+        <ContentControl Content="{Binding CurrentPreviewModel}" Visibility="{Binding ErrorMessage, Converter={c:NullToVisibilityConverter Inverted=True}}" />
+        <TextBlock Text="{Binding ErrorMessage}" Visibility="{Binding ErrorMessage, Converter={c:NullToVisibilityConverter}}" />
     </Grid>
 </Window>

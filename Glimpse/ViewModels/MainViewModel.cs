@@ -75,6 +75,8 @@ namespace Glimpse.ViewModels
             // add new views above these two
             //previews.Add(new Previews.WindowsPreviewModel());  // slow and painful, so our last resort
             previews.Add(new Previews.DefaultPreviewModel()); // thats our fallback which will always display something
+
+            this.ErrorMessage = "Nothing to preview";
         }
 
 
@@ -85,8 +87,15 @@ namespace Glimpse.ViewModels
 
         public void ShowPreview(string[] args)
         {
-            string fileToPreview = PreviewFileFromCommandLine(args);
-            DisplayFile(fileToPreview);
+            if (args == null || args.Length == 0 || string.IsNullOrEmpty(args[0]))
+            {
+                this.ErrorMessage = "Nothing to preview";
+            }
+            else
+            {
+                string fileToPreview = PreviewFileFromCommandLine(args);
+                DisplayFile(fileToPreview);
+            }
         }
 
         private string PreviewFileFromCommandLine(string[] args)
@@ -107,7 +116,7 @@ namespace Glimpse.ViewModels
                 }
                 catch
                 {
-                    this.ErrorMessage = "Invalid cmd parameter";
+                    this.ErrorMessage = "Invalid command line parameter";
                     return null;
                 }
             }
