@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.WindowsAPICodePack.Shell.Interop;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -6,15 +7,23 @@ using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace Glimpse.Interop
 {
+    [StructLayout(LayoutKind.Sequential)]
+    internal struct RECT
+    {
+        public int left;
+        public int top;
+        public int right;
+        public int bottom;
+    }
+
     [ComImport, InterfaceType(ComInterfaceType.InterfaceIsIUnknown), Guid("8895b1c6-b41f-4c1c-a562-0d564250836f")]
     internal interface IPreviewHandler
     {
-        void SetWindow(IntPtr hwnd, ref Rectangle rect);
-        void SetRect(ref Rectangle rect);
+        void SetWindow(IntPtr hwnd, ref RECT rect);
+        void SetRect(ref RECT rect);
         void DoPreview();
         void Unload();
         void SetFocus();

@@ -1,3 +1,5 @@
+
+; TODO autohotkey group for classes
 #IfWinActive ahk_class CabinetWClass ; Explorer
 #IfWinActive ahk_class Progman       ; Desktop
 #space::

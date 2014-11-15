@@ -1,0 +1,7 @@
+﻿<pv:DirectoryPreviewModel xmlns:pv="clr-namespace:Glimpse.ViewModels.Previews" 
+                          Foldername="Test"
+                          CreationTime="02/25/2014"
+                          TotalSize="142123789"
+                          FileCount="12765"
+                          FolderCount="7532"
+                            />
