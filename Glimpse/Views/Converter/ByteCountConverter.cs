@@ -54,9 +54,9 @@ namespace Glimpse.Views.Converter
 
             var ci = culture;
             if (RoundToInteger)
-                return string.Format(ci, "{0} {1}", (int)Math.Round(result), unit);
+                return string.Format(ci, "{0:N0} {1}", (int)Math.Round(result), unit);
             else
-                return string.Format(ci, "{0:0.##} {1}", result, unit);
+                return string.Format(ci, "{0:N0} {1}", result, unit);
         }
 
         public override object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
