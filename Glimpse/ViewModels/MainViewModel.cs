@@ -32,12 +32,8 @@ namespace Glimpse.ViewModels
             get
             {
                 if (applicationExitCommand == null)
-                {
-                    applicationExitCommand = new RelayCommand(() => 
-                    {
-                        System.Windows.Application.Current.Shutdown();
-                    });
-                }
+                    applicationExitCommand = new RelayCommand(() => Application.Current.Shutdown());
+
                 return applicationExitCommand;
             }
         }
@@ -48,9 +44,8 @@ namespace Glimpse.ViewModels
             get
             {
                 if (showPreviewCommand == null)
-                {
                     showPreviewCommand = new RelayCommand(() => ShowPreview());
-                }
+
                 return showPreviewCommand;
             }
         }
@@ -62,8 +57,17 @@ namespace Glimpse.ViewModels
             set { errorMessage = value; OnPropertyChanged(); }
         }
 
+        private System.Windows.Threading.Dispatcher MainDispatcher
+        {
+            get { return Application.Current.Dispatcher; }
+        }
+        
         public MainViewModel()
         {
+            // Single instance is started in App.xaml.cs:
+            SingleInstanceApplication.CommandReceived += SingleInstanceApplication_CommandReceived;
+            this.ErrorMessage = "Nothing to preview";
+
             previews = new List<IPreviewModel>();
 
             previews.Add(new Previews.ImagePreviewModel());
@@ -75,70 +79,78 @@ namespace Glimpse.ViewModels
             // add new views above these two
             //previews.Add(new Previews.WindowsPreviewModel());  // slow and painful, so our last resort
             previews.Add(new Previews.DefaultPreviewModel()); // thats our fallback which will always display something
-
-            this.ErrorMessage = "Nothing to preview";
         }
-
 
         public void ShowPreview()
         {
-            ShowPreview(Environment.GetCommandLineArgs());
+            // args[0] == exe name
+            var args = Environment.GetCommandLineArgs().Skip(1).ToArray();
+            ShowPreview(args);
         }
 
         public void ShowPreview(string[] args)
         {
-            if (args == null || args.Length == 0 || string.IsNullOrEmpty(args[0]))
+            ResetErrorState();
+            string fileToPreview = null;
+
+            if (GetPreviewFileFromCommandLine(args, ref fileToPreview))
             {
-                this.ErrorMessage = "Nothing to preview";
-            }
-            else
-            {
-                string fileToPreview = PreviewFileFromCommandLine(args);
                 DisplayFile(fileToPreview);
             }
         }
 
-        private string PreviewFileFromCommandLine(string[] args)
+        private void ResetErrorState()
         {
-            if (args == null)
-                throw new ArgumentNullException("args");
-            if (args.Length == 1) // first argument is exe name
-                return null;
+            this.ErrorMessage = null;
+        }
 
-            if (args[1].StartsWith("0x"))
+        private void SingleInstanceApplication_CommandReceived(object sender, string[] e)
+        {
+            ShowPreview(e);
+        }
+
+        private bool GetPreviewFileFromCommandLine(string[] args, ref string fileToPreview)
+        {
+            if (args == null || args.Length == 0)
+            {
+                this.ErrorMessage = "Nothing to preview";
+                return false;
+            }
+
+            if (args[0].StartsWith("0x"))
             {
                 try
                 {
                     long target = Convert.ToInt64(args[0], 16);
                     IntPtr hwnd = new IntPtr(target);
 
-                    return GetExplorerSelectedItemPath(hwnd);
+                    return GetExplorerSelectedItemPath(hwnd, ref fileToPreview);
                 }
                 catch
                 {
                     this.ErrorMessage = "Invalid command line parameter";
-                    return null;
+                    return false;
                 }
             }
             else
             {
-                return args[1];
+                fileToPreview = args[0];
+                return true;
             }
         }
 
-        private string GetExplorerSelectedItemPath(IntPtr hwnd)
+        private bool GetExplorerSelectedItemPath(IntPtr hwnd, ref string selectedItem)
         {
-            string file = null;
             try
             {
-                file = ExplorerAdapter.GetSelectedItem(hwnd);
+                selectedItem = ExplorerAdapter.GetSelectedItem(hwnd);
+                return true;
             }
             catch (Exception ex)
             {
                 this.ErrorMessage = "Failed to access explorer with error:\n" + ex.ToString();
+                return false;
             }
-
-            return file;
         }
 
         private void DisplayFile(string path)
@@ -154,17 +166,20 @@ namespace Glimpse.ViewModels
             {
                 if (preview.CanCreatePreview(item))
                 {
-                    this.CurrentPreviewModel = preview;
-                    preview.ShowPreview(item);
-                    
-                    // Ask for preffered Size and set it
-                    Size wndSize = Application.Current.MainWindow.GetClientSize();
-                    Size? prefferedSize = preview.PreferredPreviewSize(wndSize);
-                    if (prefferedSize != null)
-                    {
-                        SetPrefferedPreviewSize(prefferedSize.Value);    
-                    }
-                    
+                    // set preview view in main thread
+                    MainDispatcher.Invoke(() =>
+                        {
+                            this.CurrentPreviewModel = preview;
+                            preview.ShowPreview(item);
+
+                            // Ask for preffered Size and set it
+                            Size wndSize = Application.Current.MainWindow.GetClientSize();
+                            Size? prefferedSize = preview.PreferredPreviewSize(wndSize);
+                            if (prefferedSize != null)
+                            {
+                                SetPrefferedPreviewSize(prefferedSize.Value);
+                            }
+                        });
                     break;
                 }
             }
@@ -202,7 +217,7 @@ namespace Glimpse.ViewModels
 
             double xOffset = Math.Min(0.0, maxBounds.Right - (wndBounds.X + wndSize.Width));
             double yOffset = Math.Min(0.0, maxBounds.Bottom - (wndBounds.Y + wndSize.Height));
-
+            
             Application.Current.MainWindow.SetBounds(new Rect()
             {
                 X = wndBounds.X + xOffset,

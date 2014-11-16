@@ -12,21 +12,20 @@ namespace Glimpse
     {
         private const string GlimpsePipeName = "Glimpse_F90238A6-4DE1-4D5B-B5A5-3BCC43EDBDCE";
 
-        public void RunAsMaster(Action<string[]> callback)
-        {
-            if (callback == null)
-                throw new ArgumentNullException("callback");
+        public static event EventHandler<string[]> CommandReceived;
 
+        public void RunAsMaster()
+        {
             if (IsMasterInstanceRunning())
                 throw new InvalidOperationException("Theres already a master instance running.");
 
             Task.Run(() =>
             {
-                StartPipeServer(callback);
+                StartPipeServer();
             });
         }
 
-        private void StartPipeServer(Action<string[]> callback)
+        private void StartPipeServer()
         {
             try
             {
@@ -41,9 +40,9 @@ namespace Glimpse
                             CommandStream cmdStream = new CommandStream(pipeServer);
                             string[] args = cmdStream.ReceiveArgs();
 
-                            if (args != null && callback != null)
+                            if (CommandReceived != null && args != null)
                             {
-                                callback(args);
+                                CommandReceived(this, args);
                             }
                         }
                         finally

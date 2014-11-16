@@ -17,22 +17,16 @@ namespace Glimpse
 
         protected override void OnStartup(StartupEventArgs e)
         {
-            singleInstanceApp = new SingleInstanceApplication();
+            this.singleInstanceApp = new SingleInstanceApplication();
 
-            if (!singleInstanceApp.IsMasterInstanceRunning())
-            {
-                singleInstanceApp.RunAsMaster((args) =>
-                {
-                    // TODO handle args
-                });
-            }
-            else
+            if (singleInstanceApp.IsMasterInstanceRunning())
             {
                 singleInstanceApp.RunAsSlave(e.Args);
                 this.Shutdown();
                 return;
             }
 
+            singleInstanceApp.RunAsMaster();
             base.OnStartup(e);
         }
     }
