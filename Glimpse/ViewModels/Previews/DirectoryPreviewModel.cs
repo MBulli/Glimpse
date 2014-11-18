@@ -158,16 +158,27 @@ namespace Glimpse.ViewModels.Previews
 
                     DirectoryInfo dir = stack.Pop();
 
-                    foreach (var file in dir.GetFiles())
+                    try
                     {
-                        FileCount++;
-                        TotalSize += file.Length;
-                    }
+                        foreach (var file in dir.GetFiles())
+                        {
+                            FileCount++;
+                            TotalSize += file.Length;
+                        }
 
-                    foreach (var child in dir.GetDirectories())
+                        foreach (var child in dir.GetDirectories())
+                        {
+                            FolderCount++;
+                            stack.Push(child);
+                        }
+                    }
+                    catch (System.IO.DirectoryNotFoundException)
                     {
-                        FolderCount++;
-                        stack.Push(child);
+                        continue; // skip
+                    }
+                    catch (UnauthorizedAccessException)
+                    {
+                        continue; // skip these folders
                     }
                 }
 

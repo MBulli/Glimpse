@@ -36,9 +36,7 @@ namespace Glimpse
         {
             AutomationElement element = sender as AutomationElement;
 
-            if (element == null)
-                return;
-            if (element.Current.ProcessId == System.Diagnostics.Process.GetCurrentProcess().Id)
+            if (AutomationEventHandlerGuard(element))
                 return;
 
             if (element.Current.ClassName == ExplorerClassName)
