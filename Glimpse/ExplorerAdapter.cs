@@ -10,7 +10,7 @@ namespace Glimpse
 {
     class ExplorerAdapter
     {
-        public static string GetSelectedItem(IntPtr target)
+        public static string[] GetSelectedItems(IntPtr target)
         {
             // see:
             // http://blogs.msdn.com/b/oldnewthing/archive/2013/04/22/10412906.aspx
@@ -30,14 +30,21 @@ namespace Glimpse
                 {
                     dynamic selection = w.Document.SelectedItems();
 
-                    for (var j = 0; j < selection.Count; j++)
+                    string[] items = null;
+                    if (selection != null)
                     {
-                        dynamic item = selection.Item(j);
-                        Console.WriteLine(item.Name);
-                        Console.WriteLine(item.Path);
+                        items = new string[selection.Count];
+                        for (var j = 0; j < selection.Count; j++)
+                        {
+                            dynamic item = selection.Item(j);
+                            //Console.WriteLine(item.Name);
+                            //Console.WriteLine(item.Path);
 
-                        return item.Path as string;
-                    }                    
+                            items[j] = item.Path as string;
+                        }
+                    }
+
+                    return items;
                 }
             }
 

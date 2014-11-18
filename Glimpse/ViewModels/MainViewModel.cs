@@ -18,6 +18,7 @@ namespace Glimpse.ViewModels
     public class MainViewModel : PropertyChangedBase
     {
         private List<IPreviewModel> previews;
+        private ExplorerSelectionObserver explorerObserver;
 
         private IPreviewModel currentPreviewModel;
         public IPreviewModel CurrentPreviewModel
@@ -66,6 +67,11 @@ namespace Glimpse.ViewModels
         {
             // Single instance is started in App.xaml.cs:
             SingleInstanceApplication.CommandReceived += SingleInstanceApplication_CommandReceived;
+
+            this.explorerObserver = new ExplorerSelectionObserver();
+            this.explorerObserver.ExplorerSelectionChanged += explorerObserver_ExplorerSelectionChanged;
+            this.explorerObserver.StartObserver();
+
             this.ErrorMessage = "Nothing to preview";
 
             previews = new List<IPreviewModel>();
@@ -95,6 +101,7 @@ namespace Glimpse.ViewModels
 
             if (GetPreviewFileFromCommandLine(args, ref fileToPreview))
             {
+                // TODO multiselect
                 DisplayFile(fileToPreview);
             }
         }
@@ -105,6 +112,11 @@ namespace Glimpse.ViewModels
         }
 
         private void SingleInstanceApplication_CommandReceived(object sender, string[] e)
+        {
+            ShowPreview(e);
+        }
+
+        void explorerObserver_ExplorerSelectionChanged(object sender, string[] e)
         {
             ShowPreview(e);
         }
@@ -134,6 +146,7 @@ namespace Glimpse.ViewModels
             }
             else
             {
+                // TODO multiselect
                 fileToPreview = args[0];
                 return true;
             }
@@ -143,7 +156,16 @@ namespace Glimpse.ViewModels
         {
             try
             {
-                selectedItem = ExplorerAdapter.GetSelectedItem(hwnd);
+                string[] items = ExplorerAdapter.GetSelectedItems(hwnd);
+
+                if (items == null || items.Length == null)
+                {
+                    this.ErrorMessage = "Nothing to preview";
+                    return false;
+                }
+
+                // TODO multiselect
+                selectedItem = items.First();
                 return true;
             }
             catch (Exception ex)

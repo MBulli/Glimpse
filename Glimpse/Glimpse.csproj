@@ -52,6 +52,8 @@
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
+    <Reference Include="UIAutomationClient" />
+    <Reference Include="UIAutomationTypes" />
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -62,6 +64,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="ExplorerAdapter.cs" />
+    <Compile Include="ExplorerSelectionObserver.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="Interop\NativeMethods.cs" />
     <Compile Include="Models\GlimpseItem.cs" />

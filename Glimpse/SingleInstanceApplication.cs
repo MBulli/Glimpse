@@ -35,6 +35,7 @@ namespace Glimpse
                     {
                         try
                         {
+                            // TODO: delays app shutdown, needs to be canceld
                             pipeServer.WaitForConnection();
 
                             CommandStream cmdStream = new CommandStream(pipeServer);
