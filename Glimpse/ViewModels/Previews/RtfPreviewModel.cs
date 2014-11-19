@@ -8,6 +8,13 @@ namespace Glimpse.ViewModels.Previews
 {
     class RtfPreviewModel : PropertyChangedBase, IPreviewModel
     {
+        private string rtfText;
+        public string RtfText
+        {
+            get { return rtfText; }
+            set { rtfText = value; OnPropertyChanged(); }
+        }
+
         public bool CanCreatePreview(Models.GlimpseItem item)
         {
             return item.FileExtension == ".rtf";
@@ -15,12 +22,12 @@ namespace Glimpse.ViewModels.Previews
 
         public void ShowPreview(Models.GlimpseItem item)
         {
-            throw new NotImplementedException();
+            this.RtfText = System.IO.File.ReadAllText(item.FullPath);
         }
 
         public System.Windows.Size? PreferredPreviewSize(System.Windows.Size currentSize)
         {
-            throw new NotImplementedException();
+            return null;
         }
     }
 }

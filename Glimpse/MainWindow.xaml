@@ -24,6 +24,9 @@
                 <TextBox Text="{Binding Text}" TextWrapping="Wrap" IsReadOnly="True" />
             </ScrollViewer>
         </DataTemplate>
+        <DataTemplate DataType="{x:Type pv:RtfPreviewModel}">
+            <views:RichTextView RtfText="{Binding RtfText}" />
+        </DataTemplate>
         <DataTemplate DataType="{x:Type pv:LocalDrivePreviewModel}">
             <views:LocalDriveView />
         </DataTemplate>
