@@ -83,7 +83,7 @@ namespace Glimpse.ViewModels
             previews.Add(new Previews.LocalDrivePreviewModel());
 
             // add new views above these two
-            //previews.Add(new Previews.WindowsPreviewModel());  // slow and painful, so our last resort
+            previews.Add(new Previews.WindowsPreviewModel());  // slow and painful, so our last resort
             previews.Add(new Previews.DefaultPreviewModel()); // thats our fallback which will always display something
         }
 

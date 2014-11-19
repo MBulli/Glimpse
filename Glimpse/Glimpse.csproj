@@ -70,6 +70,9 @@
     <Compile Include="ExplorerSelectionObserver.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="Interop\NativeMethods.cs" />
+    <Compile Include="Interop\WindowsPreviewControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Models\GlimpseItem.cs" />
     <Compile Include="Models\Screen.cs" />
     <Compile Include="Sandbox.cs" />
@@ -99,6 +102,9 @@
     </Compile>
     <Compile Include="Views\RichTextView.xaml.cs">
       <DependentUpon>RichTextView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\WindowsPreviewHostView.xaml.cs">
+      <DependentUpon>WindowsPreviewHostView.xaml</DependentUpon>
     </Compile>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -134,6 +140,10 @@
       <SubType>Designer</SubType>
     </DesignDataWithDesignTimeCreatableTypes>
     <Page Include="Views\RichTextView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\WindowsPreviewHostView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
