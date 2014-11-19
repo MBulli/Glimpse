@@ -29,5 +29,13 @@ namespace Glimpse
             singleInstanceApp.RunAsMaster();
             base.OnStartup(e);
         }
+
+        protected override void OnExit(ExitEventArgs e)
+        {
+            base.OnExit(e);
+
+            singleInstanceApp.StopServer();
+            System.Windows.Automation.Automation.RemoveAllEventHandlers();
+        }
     }
 }

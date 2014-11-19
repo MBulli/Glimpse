@@ -13,6 +13,7 @@ namespace Glimpse
         private const string GlimpsePipeName = "Glimpse_F90238A6-4DE1-4D5B-B5A5-3BCC43EDBDCE";
 
         public static event EventHandler<string[]> CommandReceived;
+        private bool stopServer = false;
 
         public void RunAsMaster()
         {
@@ -25,17 +26,34 @@ namespace Glimpse
             });
         }
 
+        public void StopServer()
+        {
+            this.stopServer = true;
+
+            try
+            {
+                using (var nps = new NamedPipeClientStream(".", GlimpsePipeName, PipeDirection.Out))
+                {
+                    // connect client to un-block WaitForConnection
+                    nps.Connect(100);
+                }
+            }
+            catch (Exception)
+            {
+                // we can ignore any exception; we just wanted to unblock the server thread
+            }
+        }
+
         private void StartPipeServer()
         {
             try
             {
                 using (var pipeServer = new NamedPipeServerStream(GlimpsePipeName, PipeDirection.In))
                 {
-                    while (true)
+                    while (!stopServer)
                     {
                         try
                         {
-                            // TODO: delays app shutdown, needs to be canceld
                             pipeServer.WaitForConnection();
 
                             CommandStream cmdStream = new CommandStream(pipeServer);
