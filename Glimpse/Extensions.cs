@@ -15,8 +15,25 @@ namespace Glimpse
 
         public static System.Windows.Size GetClientSize(this System.Windows.Window wnd)
         {
-            return new System.Windows.Size(((System.Windows.FrameworkElement)wnd.Content).ActualWidth,
-                                           ((System.Windows.FrameworkElement)wnd.Content).ActualHeight);
+            // substract non client area
+            return new System.Windows.Size(wnd.Width 
+                                            - System.Windows.SystemParameters.WindowNonClientFrameThickness.Left
+                                            - System.Windows.SystemParameters.WindowNonClientFrameThickness.Right,
+                                           wnd.Height
+                                            - System.Windows.SystemParameters.WindowNonClientFrameThickness.Top
+                                            - System.Windows.SystemParameters.WindowNonClientFrameThickness.Bottom);
+        }
+
+        public static void SetClientSize(this System.Windows.Window wnd, System.Windows.Size clientSize)
+        {
+            // add non client area to client size 
+            wnd.Width = clientSize.Width
+                        + System.Windows.SystemParameters.WindowNonClientFrameThickness.Left
+                        + System.Windows.SystemParameters.WindowNonClientFrameThickness.Right;
+
+            wnd.Height = clientSize.Height
+                         + System.Windows.SystemParameters.WindowNonClientFrameThickness.Top
+                         + System.Windows.SystemParameters.WindowNonClientFrameThickness.Bottom;
         }
 
         public static System.Windows.Rect GetBounds(this System.Windows.Window wnd)

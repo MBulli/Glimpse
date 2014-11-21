@@ -9,6 +9,7 @@
         x:Class="Glimpse.MainWindow"
         Title="MainWindow"
         WindowStartupLocation="CenterScreen"
+        MinWidth="200" MinHeight="200"
         >
     <Window.DataContext>
         <vm:MainViewModel />
@@ -45,6 +46,7 @@
             <i:InvokeCommandAction Command="{Binding ShowPreviewCommand}" />
         </i:EventTrigger>
     </i:Interaction.Triggers>
+
     <Grid>
         <ContentControl Content="{Binding CurrentPreviewModel}" Visibility="{Binding ErrorMessage, Converter={c:NullToVisibilityConverter Inverted=True}}" />
         <TextBlock Text="{Binding ErrorMessage}" Visibility="{Binding ErrorMessage, Converter={c:NullToVisibilityConverter}}" />

@@ -158,7 +158,7 @@ namespace Glimpse.ViewModels
             {
                 string[] items = ExplorerAdapter.GetSelectedItems(hwnd);
 
-                if (items == null || items.Length == null)
+                if (items == null || items.Length == 0)
                 {
                     this.ErrorMessage = "Nothing to preview";
                     return false;
@@ -207,6 +207,11 @@ namespace Glimpse.ViewModels
             }
         }
 
+        /// <summary>
+        /// Sets the window size but ensures that the window is always fully visible (within screen bounds)
+        /// If prefferedSize is bigger than the screen bounds, prefferedSize is scaled to fit the screen keeping the aspect ratio
+        /// </summary>
+        /// <param name="prefferedSize"></param>
         private void SetPrefferedPreviewSize(Size prefferedSize)
         {
             var screen = Screen.FromMainWindow();
@@ -214,39 +219,29 @@ namespace Glimpse.ViewModels
 
             Size wndSize = prefferedSize;
 
-            if (prefferedSize.Width > maxBounds.Width)
-            {
-                double ratio = maxBounds.Width / prefferedSize.Width;
+            // scale the prefferedSize while keeping the aspect ratio
+            double ratio = Math.Min(maxBounds.Width / prefferedSize.Width,
+                                    maxBounds.Height / prefferedSize.Height);
 
+            // but only scale if prefferedSize is bigger than the screen bounds
+            if (ratio < 1.0)
+            {
                 int w = (int)Math.Floor(prefferedSize.Width * ratio);
                 int h = (int)Math.Floor(prefferedSize.Height * ratio);
 
-                wndSize = new Size(w, h);
-            }
-            else if (prefferedSize.Height > maxBounds.Height)
-            {
-                double ratio = maxBounds.Height / prefferedSize.Height;
-
-                int w = (int)Math.Floor(prefferedSize.Width * ratio);
-                int h = (int)Math.Floor(prefferedSize.Height * ratio);
-
-                wndSize = new Size(w, h);
+                wndSize = new Size(w, h);                
             }
 
             // ensure visible
-            // (We break MVVM on purpose because binding these values doesn't work well)
             Rect wndBounds = Application.Current.MainWindow.GetBounds();
 
             double xOffset = Math.Min(0.0, maxBounds.Right - (wndBounds.X + wndSize.Width));
             double yOffset = Math.Min(0.0, maxBounds.Bottom - (wndBounds.Y + wndSize.Height));
-            
-            Application.Current.MainWindow.SetBounds(new Rect()
-            {
-                X = wndBounds.X + xOffset,
-                Y = wndBounds.Y + yOffset,
-                Width = wndSize.Width,
-                Height = wndSize.Height
-            });
+
+            // We break MVVM on purpose because binding these values doesn't work well
+            Application.Current.MainWindow.Left = wndBounds.X + xOffset;
+            Application.Current.MainWindow.Top = wndBounds.Y + yOffset;
+            Application.Current.MainWindow.SetClientSize(wndSize);        
         }
 
         private bool FileSystemItemExist(string path)
