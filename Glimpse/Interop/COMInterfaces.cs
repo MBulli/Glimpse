@@ -19,7 +19,8 @@ namespace Glimpse.Interop
         public int bottom;
     }
 
-    [ComImport, InterfaceType(ComInterfaceType.InterfaceIsIUnknown), Guid("8895b1c6-b41f-4c1c-a562-0d564250836f")]
+    [Guid("8895B1C6-B41F-4C1C-A562-0D564250836F")]
+    [ComImport, InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
     internal interface IPreviewHandler
     {
         void SetWindow(IntPtr hwnd, ref RECT rect);
@@ -32,16 +33,17 @@ namespace Glimpse.Interop
         uint TranslateAccelerator(ref Message pmsg);
     }
 
-    [ComImport, InterfaceType(ComInterfaceType.InterfaceIsIUnknown), Guid("b7d14566-0509-4cce-a71f-0a554233bd9b")]
+    [Guid("B7D14566-0509-4CCE-A71F-0A554233BD9B")]
+    [ComImport, InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
     internal interface IInitializeWithFile
     {
         void Initialize([MarshalAs(UnmanagedType.LPWStr)] string pszFilePath, uint grfMode);
     }
 
-    [ComImport, InterfaceType(ComInterfaceType.InterfaceIsIUnknown), Guid("b824b49d-22ac-4161-ac8a-9916e8fa3f7f")]
+    [Guid("B824B49D-22AC-4161-AC8A-9916E8FA3F7F")]
+    [ComImport, InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
     internal interface IInitializeWithStream
     {
         void Initialize(IStream pstream, uint grfMode);
     }
-
 }

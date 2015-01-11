@@ -11,8 +11,14 @@ namespace Glimpse
     {
         private const string ExplorerClassName = "CabinetWClass";
         private const string DesktopClassName = "Progman";
+        private static readonly int CurrentProcessID;
 
         public event EventHandler<string[]> ExplorerSelectionChanged;
+
+        static ExplorerSelectionObserver()
+        {
+            CurrentProcessID = System.Diagnostics.Process.GetCurrentProcess().Id;
+        }
 
         public void StartObserver()
         {
@@ -36,7 +42,7 @@ namespace Glimpse
         {
             AutomationElement element = sender as AutomationElement;
 
-            if (AutomationEventHandlerGuard(element))
+            if (IsInvalidAutomationElement(element))
                 return;
 
             if (element.Current.ClassName == ExplorerClassName)
@@ -49,7 +55,7 @@ namespace Glimpse
         {
             AutomationElement element = sender as AutomationElement;
 
-            if (AutomationEventHandlerGuard(element))
+            if (IsInvalidAutomationElement(element))
                 return;
 
             AutomationElement parent = GetExplorerWindow(element);
@@ -76,7 +82,8 @@ namespace Glimpse
                                        new PropertyCondition(AutomationElement.ClassNameProperty, DesktopClassName));
 
             return AutomationElement.RootElement.FindAll(TreeScope.Children, cond)
-                                                .Cast<AutomationElement>();
+                                                .Cast<AutomationElement>()
+                                                .Where(e => e.Current.ProcessId != CurrentProcessID);
         }
 
         private void AddSelectionEvenhandler(AutomationElement element)
@@ -108,11 +115,11 @@ namespace Glimpse
             }
         }
 
-        private bool AutomationEventHandlerGuard(AutomationElement element)
+        private bool IsInvalidAutomationElement(AutomationElement element)
         {
             if (element == null)
                 return true;
-            if (element.Current.ProcessId == System.Diagnostics.Process.GetCurrentProcess().Id)
+            if (element.Current.ProcessId == CurrentProcessID)
                 return true;
 
             return false;
