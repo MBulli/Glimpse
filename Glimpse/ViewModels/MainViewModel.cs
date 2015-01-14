@@ -70,7 +70,13 @@ namespace Glimpse.ViewModels
 
             this.explorerObserver = new ExplorerSelectionObserver();
             this.explorerObserver.ExplorerSelectionChanged += explorerObserver_ExplorerSelectionChanged;
-            this.explorerObserver.StartObserver();
+
+            if (!IsDesignMode())
+            {
+                // If we're running inside a designer we don't want to track explorer selection.
+                // Otherwise WPF Designer might crash or case deadlocks
+                this.explorerObserver.StartObserver();
+            }
 
             this.ErrorMessage = "Nothing to preview";
 
@@ -266,6 +272,12 @@ namespace Glimpse.ViewModels
 
             DirectoryInfo dir = new DirectoryInfo(path);
             return dir.Exists;
+        }
+
+        private static bool IsDesignMode()
+        {
+            // see: http://msdn.microsoft.com/en-us/library/bb546934.aspx
+            return (bool)(System.ComponentModel.DesignerProperties.IsInDesignModeProperty.GetMetadata(typeof(System.Windows.DependencyObject)).DefaultValue);
         }
     }
 }
