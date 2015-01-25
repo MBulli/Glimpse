@@ -37,6 +37,10 @@
         <DataTemplate DataType="{x:Type pv:WindowsPreviewModel}">
             <views:WindowsPreviewHostView Source="{Binding Source}" />
         </DataTemplate>
+        <DataTemplate DataType="{x:Type pv:VideoPreviewModel}">
+            <views:VideoView Source="{Binding Source}" PlaybackState="{Binding PlaybackState}" />
+        </DataTemplate>
+
     </Window.Resources>
     <Window.InputBindings>
         <KeyBinding Key="Escape" Command="{Binding ApplicationExitCommand}" />
