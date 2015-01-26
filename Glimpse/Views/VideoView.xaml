@@ -46,7 +46,7 @@
                     <Style TargetType="{x:Type Image}">
                         <Setter Property="Source" Value="{StaticResource MediaVolumeFullImage}" />
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding IsSoundMuted}">
+                            <DataTrigger Binding="{Binding IsMuted, ElementName=mediaElement}" Value="true">
                                 <Setter Property="Source" Value="{StaticResource MediaVolumeMutedImage}" />
                             </DataTrigger>
                         </Style.Triggers>
