@@ -36,8 +36,17 @@
                           MediaOpened="mediaElement_MediaOpened"
                           MediaEnded="mediaElement_MediaEnded"/>
         </Grid>
-        
-        <Button Name="playPauseButton" Content="{StaticResource MediaStatePlayImage}" Grid.Row="1" Command="MediaCommands.TogglePlayPause" />
+
+        <Button Name="playPauseButton" Grid.Row="1" Command="MediaCommands.TogglePlayPause" Padding="10" >
+            <Image>
+                <Image.Style>
+                    <Style TargetType="{x:Type Image}">
+                        <Setter Property="Source" Value="{StaticResource MediaStatePlayImage}" />
+                        <!-- TODO: DataTrigger, but how to bind? -->
+                    </Style>
+                </Image.Style>
+            </Image>
+        </Button>
         <Slider Name="seekbar" Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" Thumb.DragStarted="seekBar_DragStarted" Thumb.DragCompleted="seekBar_DragCompleted" Thumb.DragDelta="seekBar_DragDelta" />
         <TextBlock Name="timeLabel" Text="00:00 / 00:00" Grid.Row="1" Grid.Column="2" VerticalAlignment="Center" />
         <Button Name="muteSoundButton" Grid.Row="1" Grid.Column="3" Command="MediaCommands.MuteVolume" Padding="10">
