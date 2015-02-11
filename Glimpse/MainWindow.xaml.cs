@@ -23,6 +23,11 @@ namespace Glimpse
         public MainWindow()
         {
             InitializeComponent();
+
+#if DEBUG
+            // Topmost is most of the time just annoying while debugging
+            this.Topmost = false;
+#endif
         }
     }
 }

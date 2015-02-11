@@ -9,6 +9,7 @@
         x:Class="Glimpse.MainWindow"
         Title="MainWindow"
         WindowStartupLocation="CenterScreen"
+        Topmost="True"
         MinWidth="200" MinHeight="200"
         >
     <Window.DataContext>
