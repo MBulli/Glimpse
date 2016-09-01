@@ -35,6 +35,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Markdig, Version=0.7.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Markdig.0.7.4\lib\net40\Markdig.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Microsoft.WindowsAPICodePack">
       <HintPath>..\packages\WindowsAPICodePack-Core.1.1.1\lib\Microsoft.WindowsAPICodePack.dll</HintPath>
     </Reference>
@@ -76,6 +80,11 @@
     </Compile>
     <Compile Include="Models\GlimpseItem.cs" />
     <Compile Include="Models\Screen.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Sandbox.cs" />
     <Compile Include="SingleInstanceApplication.cs" />
     <Compile Include="ViewModels\IPreviewModel.cs" />
@@ -84,11 +93,13 @@
     <Compile Include="ViewModels\Previews\DirectoryPreviewModel.cs" />
     <Compile Include="ViewModels\Previews\ImagePreviewModel.cs" />
     <Compile Include="ViewModels\Previews\LocalDrivePreviewModel.cs" />
+    <Compile Include="ViewModels\Previews\MarkdownPreviewModel.cs" />
     <Compile Include="ViewModels\Previews\RtfPreviewModel.cs" />
     <Compile Include="ViewModels\Previews\TextPreviewModel.cs" />
     <Compile Include="ViewModels\Previews\WindowsPreviewModel.cs" />
     <Compile Include="ViewModels\PropertyChangedBase.cs" />
     <Compile Include="ViewModels\RelayCommand.cs" />
+    <Compile Include="Views\Behaviors\BrowserBehavior.cs" />
     <Compile Include="Views\Converter\BaseConverter.cs" />
     <Compile Include="Views\Converter\ByteCountConverter.cs" />
     <Compile Include="Views\Converter\NullToVisibilityConverter.cs" />
@@ -100,6 +111,9 @@
     </Compile>
     <Compile Include="Views\LocalDriveView.xaml.cs">
       <DependentUpon>LocalDriveView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\MarkdownView.xaml.cs">
+      <DependentUpon>MarkdownView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\RichTextView.xaml.cs">
       <DependentUpon>RichTextView.xaml</DependentUpon>
@@ -140,6 +154,10 @@
     <DesignDataWithDesignTimeCreatableTypes Include="Views\DesignData\LocalDriveViewDesignData.xaml">
       <SubType>Designer</SubType>
     </DesignDataWithDesignTimeCreatableTypes>
+    <Page Include="Views\MarkdownView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\RichTextView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -153,18 +171,15 @@
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Content Include="Resources\MarkdownHtmlTemplate.html" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
+      <SubType>Designer</SubType>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <Content Include="..\GlimpseHotkeys.ahk">

@@ -88,6 +88,7 @@ namespace Glimpse.ViewModels
             previews.Add(new Previews.ImagePreviewModel());
             previews.Add(new Previews.TextPreviewModel());
             previews.Add(new Previews.RtfPreviewModel());
+            previews.Add(new Previews.MarkdownPreviewModel());
             previews.Add(new Previews.DirectoryPreviewModel());
             previews.Add(new Previews.LocalDrivePreviewModel());
 
