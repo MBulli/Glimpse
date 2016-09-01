@@ -18,7 +18,8 @@ namespace Glimpse.ViewModels
     public class MainViewModel : PropertyChangedBase
     {
         private List<IPreviewModel> previews;
-        private ExplorerSelectionObserver explorerObserver;
+        private ExplorerAdapter explorer;
+        private ExplorerMonitor explorerMonitor;
 
         private IPreviewModel currentPreviewModel;
         public IPreviewModel CurrentPreviewModel
@@ -68,14 +69,16 @@ namespace Glimpse.ViewModels
             // Single instance is started in App.xaml.cs:
             SingleInstanceApplication.CommandReceived += SingleInstanceApplication_CommandReceived;
 
-            this.explorerObserver = new ExplorerSelectionObserver();
-            this.explorerObserver.ExplorerSelectionChanged += explorerObserver_ExplorerSelectionChanged;
+            this.explorer = new ExplorerAdapter();
+            this.explorerMonitor = new ExplorerMonitor();
+            this.explorerMonitor.ExplorerWindowGotFocus += OnExplorerWindowGotFocus;
+            this.explorerMonitor.ExplorerSelectionChanged += OnExplorerSelectionChanged;
 
             if (!IsDesignMode())
             {
                 // If we're running inside a designer we don't want to track explorer selection.
-                // Otherwise WPF Designer might crash or case deadlocks
-                this.explorerObserver.StartObserver();
+                // Otherwise WPF Designer might crash or cause deadlocks
+                this.explorerMonitor.Start();
             }
 
             this.ErrorMessage = "Nothing to preview";
@@ -112,6 +115,19 @@ namespace Glimpse.ViewModels
             }
         }
 
+        public void ShowPreview(IntPtr hWnd)
+        {
+            ResetErrorState();
+            string fileToPreview = null;
+
+            if (GetExplorerSelectedItemPath(hWnd, ref fileToPreview))
+            {
+                // TODO multiselect
+                DisplayFile(fileToPreview);
+            }
+        }
+
+
         private void ResetErrorState()
         {
             this.ErrorMessage = null;
@@ -119,12 +135,23 @@ namespace Glimpse.ViewModels
 
         private void SingleInstanceApplication_CommandReceived(object sender, string[] e)
         {
-            ShowPreview(e);
+            MainDispatcher.InvokeAsync(() => {
+                ShowPreview(e);
+            });
         }
 
-        void explorerObserver_ExplorerSelectionChanged(object sender, string[] e)
+        private void OnExplorerWindowGotFocus(object sender, ExplorerMonitorEventArgs e)
         {
-            ShowPreview(e);
+            MainDispatcher.InvokeAsync(() => {
+                ShowPreview(e.ExplorerWindowHandle);
+            });
+        }
+
+        private void OnExplorerSelectionChanged(object sender, ExplorerMonitorEventArgs e)
+        {
+            MainDispatcher.InvokeAsync(() => {
+                ShowPreview(e.ExplorerWindowHandle);
+            });
         }
 
         private bool GetPreviewFileFromCommandLine(string[] args, ref string fileToPreview)
@@ -162,7 +189,7 @@ namespace Glimpse.ViewModels
         {
             try
             {
-                string[] items = ExplorerAdapter.GetSelectedItems(hwnd);
+                string[] items = explorer.GetSelectedItems(hwnd);
 
                 if (items == null || items.Length == 0)
                 {
@@ -195,7 +222,7 @@ namespace Glimpse.ViewModels
                 if (preview.CanCreatePreview(item))
                 {
                     // set preview view in main thread
-                    MainDispatcher.Invoke(() =>
+                    MainDispatcher.InvokeAsync(() =>
                         {
                             this.CurrentPreviewModel = preview;
                             preview.ShowPreview(item);
