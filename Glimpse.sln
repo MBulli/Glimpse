@@ -1,7 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 15
+VisualStudioVersion = 15.0.26403.3
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Glimpse", "Glimpse\Glimpse.csproj", "{7D2B1249-BEDB-4777-A9D2-7DFCFA181D99}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Glimpse.ExplorerMonitor", "Glimpse.ExplorerMonitor\Glimpse.ExplorerMonitor.csproj", "{AA70FE2F-27DB-42ED-B42E-88A2CB3AC08F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -13,6 +17,10 @@ Global
 		{7D2B1249-BEDB-4777-A9D2-7DFCFA181D99}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7D2B1249-BEDB-4777-A9D2-7DFCFA181D99}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7D2B1249-BEDB-4777-A9D2-7DFCFA181D99}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AA70FE2F-27DB-42ED-B42E-88A2CB3AC08F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AA70FE2F-27DB-42ED-B42E-88A2CB3AC08F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AA70FE2F-27DB-42ED-B42E-88A2CB3AC08F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AA70FE2F-27DB-42ED-B42E-88A2CB3AC08F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

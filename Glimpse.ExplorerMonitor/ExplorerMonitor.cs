@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Automation;
 
-namespace Glimpse
+namespace Glimpse.ExplorerMonitor
 {
     class ExplorerMonitor
     {
@@ -16,8 +16,8 @@ namespace Glimpse
         private readonly int CurrentProcessID;
         private AutomationElement lastTopLevelWindow;
 
-        public event EventHandler<ExplorerMonitorEventArgs> ExplorerWindowGotFocus;
-        public event EventHandler<ExplorerMonitorEventArgs> ExplorerSelectionChanged;
+        public event EventHandler<IntPtr> ExplorerWindowGotFocus;
+        public event EventHandler<IntPtr> ExplorerSelectionChanged;
 
         public ExplorerMonitor()
         {
@@ -57,15 +57,15 @@ namespace Glimpse
 
                     if (IsExplorerWindow(newTopLevelWindow))
                     {
-                        Console.WriteLine("Focus moved to new top-level explorer window " + newTopLevelWindow.Current.Name);
+                        Debug.WriteLine("Focus moved to new top-level explorer window " + newTopLevelWindow.Current.Name);
 
                         AddSelectionEvenhandler(newTopLevelWindow);
 
-                        ExplorerWindowGotFocus?.Invoke(this, new ExplorerMonitorEventArgs(new IntPtr(newTopLevelWindow.Current.NativeWindowHandle)));
+                        ExplorerWindowGotFocus?.Invoke(this, new IntPtr(newTopLevelWindow.Current.NativeWindowHandle));
                     }
                     else
                     {
-                        Console.WriteLine("Focus moved to new top-level non-explorer window " + newTopLevelWindow.Current.Name);
+                        Debug.WriteLine("Focus moved to new top-level non-explorer window " + newTopLevelWindow.Current.Name);
                     }
 
                     lastTopLevelWindow = newTopLevelWindow;
@@ -73,7 +73,7 @@ namespace Glimpse
             }
             catch (ElementNotAvailableException ex)
             {
-                Console.WriteLine("SelectionMonitor: Fail OnFocusChanged " + ex.ToString());
+                Debug.WriteLine("SelectionMonitor: Fail OnFocusChanged " + ex.ToString());
             }
         }
 
@@ -111,8 +111,8 @@ namespace Glimpse
             if (IsInvalidAutomationElement(element))
                 return;
 
-            Console.WriteLine("Selection changed. Sender: " + element.Current.Name);
-            ExplorerSelectionChanged?.Invoke(this, new ExplorerMonitorEventArgs(new IntPtr(lastTopLevelWindow.Current.NativeWindowHandle)));
+            Debug.WriteLine("Selection changed. Sender: " + element.Current.Name);
+            ExplorerSelectionChanged?.Invoke(this, new IntPtr(lastTopLevelWindow.Current.NativeWindowHandle));
         }
 
         /// <summary>
@@ -186,15 +186,6 @@ namespace Glimpse
                 return true;
             }
         }
-    }
 
-    class ExplorerMonitorEventArgs : EventArgs
-    {
-        public readonly IntPtr ExplorerWindowHandle;
-
-        public ExplorerMonitorEventArgs(IntPtr hwnd)
-        {
-            ExplorerWindowHandle = hwnd;
-        }
     }
 }

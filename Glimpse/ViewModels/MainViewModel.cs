@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 
 using Glimpse.Models;
+using Glimpse.ExplorerMonitor;
 
 using Rect = System.Windows.Rect;
 using Size = System.Windows.Size;
@@ -19,7 +20,7 @@ namespace Glimpse.ViewModels
     {
         private List<IPreviewModel> previews;
         private ExplorerAdapter explorer;
-        private ExplorerMonitor explorerMonitor;
+        private ExplorerMonitorAdapter explorerMonitor;
 
         private IPreviewModel currentPreviewModel;
         public IPreviewModel CurrentPreviewModel
@@ -70,15 +71,15 @@ namespace Glimpse.ViewModels
             SingleInstanceApplication.CommandReceived += SingleInstanceApplication_CommandReceived;
 
             this.explorer = new ExplorerAdapter();
-            this.explorerMonitor = new ExplorerMonitor();
+            this.explorerMonitor = new ExplorerMonitorAdapter(System.Threading.SynchronizationContext.Current);
             this.explorerMonitor.ExplorerWindowGotFocus += OnExplorerWindowGotFocus;
             this.explorerMonitor.ExplorerSelectionChanged += OnExplorerSelectionChanged;
-
+            
             if (!IsDesignMode())
             {
                 // If we're running inside a designer we don't want to track explorer selection.
                 // Otherwise WPF Designer might crash or cause deadlocks
-                this.explorerMonitor.Start();
+                this.explorerMonitor.StartMonitor();
             }
 
             this.ErrorMessage = "Nothing to preview";
