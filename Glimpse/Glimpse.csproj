@@ -91,6 +91,7 @@
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\Previews\DefaultPreviewModel.cs" />
     <Compile Include="ViewModels\Previews\DirectoryPreviewModel.cs" />
+    <Compile Include="ViewModels\Previews\HtmlPreviewModel.cs" />
     <Compile Include="ViewModels\Previews\ImagePreviewModel.cs" />
     <Compile Include="ViewModels\Previews\LocalDrivePreviewModel.cs" />
     <Compile Include="ViewModels\Previews\MarkdownPreviewModel.cs" />

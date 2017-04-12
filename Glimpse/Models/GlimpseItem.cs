@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.WindowsAPICodePack.Shell;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -11,6 +12,7 @@ namespace Glimpse.Models
     {
         private Lazy<PerceivedType> perceivedType;
         private Lazy<GlimpseItemKind> itemKind;
+        private Lazy<ShellFile> shellFile;
 
         /// <summary>
         /// Gets a string representing the item's full path (eg. "C:\Temp\foo.txt")
@@ -58,6 +60,7 @@ namespace Glimpse.Models
         public bool IsUncPath { get; private set; }
 
         public PerceivedType PerceivedType { get { return perceivedType.Value; } }
+        public ShellFile ShellFile { get { return shellFile.Value; } }
 
         public GlimpseItem(string path)
         {
@@ -77,6 +80,7 @@ namespace Glimpse.Models
             // Lazy load attributes which trigger a file access
             perceivedType = new Lazy<PerceivedType>(LoadPerceivedType);
             itemKind = new Lazy<GlimpseItemKind>(LoadItemKind);
+            shellFile = new Lazy<ShellFile>(LoadShellFile);
         }
 
         private PerceivedType LoadPerceivedType()
@@ -98,6 +102,18 @@ namespace Glimpse.Models
                 return GlimpseItemKind.Directory;
 
             return GlimpseItemKind.Unknown;
+        }
+
+        private ShellFile LoadShellFile()
+        {
+            if (this.IsFile)
+            {
+                return ShellFile.FromFilePath(this.FullPath);
+            }
+            else
+            {
+                return null;
+            }
         }
     }
 

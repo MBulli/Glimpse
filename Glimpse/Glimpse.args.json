@@ -1,0 +1,28 @@
+{
+  "DataCollection": [
+    {
+      "Id": "c5e24720-4068-49d0-ba00-8c9a6f56b4f8",
+      "Command": "\"C:\\Users\\Markus\\Pictures\\1520799_479493978834760_256787811_n.jpg\""
+    },
+    {
+      "Id": "0aead9af-9d04-4ca2-9b3b-72cb2b9f1c12",
+      "Command": "\"C:\\Temp\""
+    },
+    {
+      "Id": "ca266f61-25b3-4efb-83ae-1f7f2602c139",
+      "Command": "C:\\"
+    },
+    {
+      "Id": "d58a7705-2e64-4697-ab8e-12fd0144de59",
+      "Command": "\"C:\\Users\\Markus\\Documents\\GitHub\\SmartCommandlineArgs\\README.md\""
+    },
+    {
+      "Id": "69e8f674-b820-4366-b046-2f6454984ae1",
+      "Command": "\"C:\\Users\\Markus\\Documents\\bulli.HTM\""
+    },
+    {
+      "Id": "892f6cf0-fa79-4a6e-a29b-8fa847eb480b",
+      "Command": "\"C:\\Users\\Markus\\Documents\\My Web Sites\\WebSite1\\iisstart.htm\""
+    }
+  ]
+}
