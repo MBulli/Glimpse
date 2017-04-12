@@ -22,7 +22,10 @@ namespace Glimpse.ViewModels.Previews
 
         public void ShowPreview(Models.GlimpseItem item)
         {
-            this.Source = item.FullPath;
+            System.Windows.Threading.Dispatcher.CurrentDispatcher.InvokeAsync(() =>
+            {
+                this.Source = item.FullPath;
+            });
         }
 
         public System.Windows.Size? PreferredPreviewSize(System.Windows.Size currentSize)
