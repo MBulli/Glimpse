@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,7 +17,7 @@ namespace Glimpse.ExplorerMonitor
         IXDBroadcaster broadcaster;
         ExplorerMonitor observer;
 
-        public MonitorApplicationContext()
+        public MonitorApplicationContext(CommandlineOptions commandline)
         {
             messageClient = new XDMessagingClient();
             broadcaster = messageClient.Broadcasters.GetBroadcasterForMode(XDTransportMode.HighPerformanceUI);
@@ -27,10 +28,42 @@ namespace Glimpse.ExplorerMonitor
             sink.MessageReceived += Sink_MessageReceived;
 
             observer = new ExplorerMonitor();
-            observer.ExplorerSelectionChanged += Observer_ExplorerSelectionChanged; ;
+            observer.ExplorerSelectionChanged += Observer_ExplorerSelectionChanged;
             observer.ExplorerWindowGotFocus += Observer_ExplorerWindowGotFocus;
 
+            WatchParentProcessExit(commandline.ParentProcessId);
+
             observer.Start();
+
+            if (commandline.ShowDebugForm)
+            {
+                this.MainForm = new DebugForm();
+                this.MainForm.Show();
+            }
+        }
+
+        private void WatchParentProcessExit(int parentProcessId)
+        {
+            if (parentProcessId <= 0)
+                return;
+
+            var parentProcess = Process.GetProcessById(parentProcessId);
+            parentProcess.EnableRaisingEvents = true;
+            parentProcess.Exited += ParentProcess_Exited;
+        }
+
+        private void ParentProcess_Exited(object sender, EventArgs e)
+        {
+            Debug.WriteLine($"Parent process exited.");
+            Shutdown();
+        }
+
+        private void Shutdown()
+        {
+            Debug.WriteLine("Shutting down.");
+
+            observer.Stop();
+            Application.Exit();
         }
 
         private void Sink_MessageReceived(object sender, XDMessageEventArgs e)
@@ -39,8 +72,8 @@ namespace Glimpse.ExplorerMonitor
             {
                 if (e.DataGram.Message == "shutdown")
                 {
-                    observer.Stop();
-                    Application.Exit();
+                    Debug.WriteLine("Shutdown command received.");
+                    Shutdown();
                 }
             }
         }

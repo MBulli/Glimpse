@@ -50,6 +50,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CommandlineOptions.cs" />
     <Compile Include="ExplorerMonitor.cs" />
     <Compile Include="ExplorerMonitorAdapter.cs" />
     <Compile Include="DebugForm.cs">

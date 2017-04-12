@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -61,7 +62,7 @@ namespace Glimpse.ExplorerMonitor
 
         public void StartMonitor()
         {
-            System.Diagnostics.Process.Start("Glimpse.ExplorerMonitor.exe", System.Diagnostics.Process.GetCurrentProcess().Id.ToString());
+            Process.Start("Glimpse.ExplorerMonitor.exe", $"/parent:{Process.GetCurrentProcess().Id.ToString()} /debugform");
         }
 
         public void StopMonitor()
