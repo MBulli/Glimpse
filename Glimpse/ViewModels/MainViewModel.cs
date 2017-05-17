@@ -79,7 +79,14 @@ namespace Glimpse.ViewModels
             {
                 // If we're running inside a designer we don't want to track explorer selection.
                 // Otherwise WPF Designer might crash or cause deadlocks
-                this.explorerMonitor.StartMonitor();
+                try
+                {
+                    this.explorerMonitor.StartMonitor();
+                }
+                catch(Exception ex)
+                {
+                    System.Windows.MessageBox.Show($"Failed to start Explorer Monitor with error: {ex}", "Error", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
+                }
             }
 
             this.ErrorMessage = "Nothing to preview";

@@ -23,6 +23,10 @@
     {
       "Id": "892f6cf0-fa79-4a6e-a29b-8fa847eb480b",
       "Command": "\"C:\\Users\\Markus\\Documents\\My Web Sites\\WebSite1\\iisstart.htm\""
+    },
+    {
+      "Id": "7c70cfe7-8ea7-4085-8da3-a3b461102078",
+      "Command": "0x0006073e"
     }
   ]
 }
