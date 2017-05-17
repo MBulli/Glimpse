@@ -9,6 +9,7 @@
         x:Class="Glimpse.MainWindow"
         Title="MainWindow"
         WindowStartupLocation="CenterScreen"
+        Topmost="True"
         MinWidth="200" MinHeight="200"
         >
     <Window.DataContext>
@@ -33,6 +34,12 @@
         </DataTemplate>
         <DataTemplate DataType="{x:Type pv:DirectoryPreviewModel}">
             <views:DirectoryView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type pv:MarkdownPreviewModel}">
+            <views:MarkdownView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type pv:HtmlPreviewModel}">
+            <views:MarkdownView />
         </DataTemplate>
         <DataTemplate DataType="{x:Type pv:WindowsPreviewModel}">
             <views:WindowsPreviewHostView Source="{Binding Source}" />

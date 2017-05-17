@@ -45,7 +45,11 @@ namespace Glimpse.Views
             var winPreviewHost = (WindowsPreviewHostView)d;
 
             string source = e.NewValue as string;
-            winPreviewHost.windowsPreview.Open(source);
+
+            System.Windows.Threading.Dispatcher.CurrentDispatcher.InvokeAsync(() =>
+            {
+                winPreviewHost.windowsPreview.Open(source);
+            });          
         }
     }
 }

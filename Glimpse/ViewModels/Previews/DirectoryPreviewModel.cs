@@ -89,7 +89,7 @@ namespace Glimpse.ViewModels.Previews
 
         public System.Windows.Size? PreferredPreviewSize(System.Windows.Size currentSize)
         {
-            return null;
+            return new System.Windows.Size(600, 250);
         }
 
         void UpdateFolderStats()

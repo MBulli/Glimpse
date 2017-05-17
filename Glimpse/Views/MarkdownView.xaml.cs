@@ -13,21 +13,16 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Glimpse
+namespace Glimpse.Views
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for MarkdownView.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MarkdownView : UserControl
     {
-        public MainWindow()
+        public MarkdownView()
         {
             InitializeComponent();
-
-#if DEBUG
-            // Topmost is most of the time just annoying while debugging
-            this.Topmost = false;
-#endif
         }
     }
 }

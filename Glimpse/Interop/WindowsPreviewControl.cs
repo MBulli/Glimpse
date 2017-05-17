@@ -85,23 +85,22 @@ namespace Glimpse.Interop
                 return false;
             }
 
-            // stream lifetime is bound to control lifetime
-            FileStream fs = File.OpenRead(filename);            
+            // stream lifetime is bound to control lifetime 
             Guid previewHandler = GetPreviewHandlerGUID(filename);
-            return Open(fs, previewHandler);
+            return Open(filename, previewHandler);
         }
 
         /// <summary>
         /// Opens the specified stream using the preview handler COM type with the provided GUID and displays the result in this PreviewHandlerHost.
         /// </summary>
-        /// <param name="stream"></param>
+        /// <param name="filename"></param>
         /// <param name="previewHandler"></param>
         /// <returns></returns>
-        public bool Open(Stream stream, Guid previewHandler)
+        public bool Open(string filename, Guid previewHandler)
         {
             UnloadPreviewHandler();
 
-            if (stream == null)
+            if (string.IsNullOrEmpty(filename))
                 return false;
             if (previewHandler == Guid.Empty)
                 return false;
@@ -123,17 +122,22 @@ namespace Glimpse.Interop
             if (currentPreviewHandler is IInitializeWithStream)
             {
                 // must wrap the stream to provide compatibility with IStream
-                currentPreviewHandlerStream = stream;
+                this.currentPreviewHandlerStream = File.OpenRead(filename);
                 StreamWrapper wrapped = new StreamWrapper(currentPreviewHandlerStream);
-                ((IInitializeWithStream)currentPreviewHandler).Initialize(wrapped, 0);
+                ThrowOnFailure(((IInitializeWithStream)currentPreviewHandler).Initialize(wrapped, 0));
+            }
+            else if (currentPreviewHandler is IInitializeWithFile)
+            {
+                ThrowOnFailure(((IInitializeWithFile)currentPreviewHandler).Initialize(filename, 0));
             }
 
             if (currentPreviewHandler is IPreviewHandler)
             {
                 // bind the preview handler to the control's bounds and preview the content
                 RECT rect = ClientRECT();
-                ((IPreviewHandler)currentPreviewHandler).SetWindow(Handle, ref rect);
-                ((IPreviewHandler)currentPreviewHandler).DoPreview();
+                ThrowOnFailure(((IPreviewHandler)currentPreviewHandler).SetWindow(Handle, ref rect));
+                ThrowOnFailure(((IPreviewHandler)currentPreviewHandler).SetRect(ref rect));
+                ThrowOnFailure(((IPreviewHandler)currentPreviewHandler).DoPreview());
 
                 return true;
             }
@@ -155,6 +159,14 @@ namespace Glimpse.Interop
         private Guid GetPreviewHandlerGUID(string filename)
         {
             return Win32.PreviewHandlerGuid(filename);
+        }
+
+        private void ThrowOnFailure(int hr)
+        {
+            if (hr != 0)
+            {
+                Marshal.ThrowExceptionForHR(hr);
+            }
         }
     }
 }

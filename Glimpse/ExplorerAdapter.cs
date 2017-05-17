@@ -10,14 +10,20 @@ namespace Glimpse
 {
     class ExplorerAdapter
     {
-        public static string[] GetSelectedItems(IntPtr target)
+        private dynamic shell;
+
+        public ExplorerAdapter()
+        {
+            Type typeShell = Type.GetTypeFromProgID("Shell.Application");
+            this.shell = Activator.CreateInstance(typeShell);
+        }
+
+        public string[] GetSelectedItems(IntPtr target)
         {
             // see:
             // http://blogs.msdn.com/b/oldnewthing/archive/2013/04/22/10412906.aspx
             // http://blogs.msdn.com/b/oldnewthing/archive/2004/07/20/188696.aspx
 
-            Type typeShell = Type.GetTypeFromProgID("Shell.Application");
-            dynamic shell = Activator.CreateInstance(typeShell);
             dynamic shellWindows = shell.Windows(); // IShellWindows
 
             for (var i = 0; i < shellWindows.Count; i++)
@@ -49,6 +55,6 @@ namespace Glimpse
             }
 
             return null;
-        }       
+        }  
     }
 }

@@ -6,26 +6,25 @@ using System.Threading.Tasks;
 
 namespace Glimpse.ViewModels.Previews
 {
-    class WindowsPreviewModel : PropertyChangedBase, IPreviewModel
+    class HtmlPreviewModel : PropertyChangedBase, IPreviewModel
     {
-        private string source;
-        public string Source
+        private string htmlText;
+        public string MarkdownHtml
         {
-            get { return source; }
-            set { source = value; OnPropertyChanged(); }
+            get { return htmlText; }
+            set { htmlText = value; OnPropertyChanged(); }
         }
 
         public bool CanCreatePreview(Models.GlimpseItem item)
         {
-            return Interop.Win32.PreviewHandlerGuid(item.FullPath) != Guid.Empty;
+            return item.FileExtension == ".htm" 
+                || item.FileExtension == ".html" 
+                || item.ShellFile?.Properties.System.ContentType?.Value == "text/html";
         }
 
         public void ShowPreview(Models.GlimpseItem item)
         {
-            System.Windows.Threading.Dispatcher.CurrentDispatcher.InvokeAsync(() =>
-            {
-                this.Source = item.FullPath;
-            });
+            this.MarkdownHtml = System.IO.File.ReadAllText(item.FullPath);
         }
 
         public System.Windows.Size? PreferredPreviewSize(System.Windows.Size currentSize)

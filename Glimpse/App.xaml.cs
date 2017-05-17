@@ -35,7 +35,6 @@ namespace Glimpse
             base.OnExit(e);
 
             singleInstanceApp.StopServer();
-            System.Windows.Automation.Automation.RemoveAllEventHandlers();
         }
     }
 }

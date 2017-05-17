@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 
 using Glimpse.Models;
+using Glimpse.ExplorerMonitor;
 
 using Rect = System.Windows.Rect;
 using Size = System.Windows.Size;
@@ -18,7 +19,8 @@ namespace Glimpse.ViewModels
     public class MainViewModel : PropertyChangedBase
     {
         private List<IPreviewModel> previews;
-        private ExplorerSelectionObserver explorerObserver;
+        private ExplorerAdapter explorer;
+        private ExplorerMonitorAdapter explorerMonitor;
 
         private IPreviewModel currentPreviewModel;
         public IPreviewModel CurrentPreviewModel
@@ -68,14 +70,23 @@ namespace Glimpse.ViewModels
             // Single instance is started in App.xaml.cs:
             SingleInstanceApplication.CommandReceived += SingleInstanceApplication_CommandReceived;
 
-            this.explorerObserver = new ExplorerSelectionObserver();
-            this.explorerObserver.ExplorerSelectionChanged += explorerObserver_ExplorerSelectionChanged;
-
+            this.explorer = new ExplorerAdapter();
+            this.explorerMonitor = new ExplorerMonitorAdapter(System.Threading.SynchronizationContext.Current);
+            this.explorerMonitor.ExplorerWindowGotFocus += OnExplorerWindowGotFocus;
+            this.explorerMonitor.ExplorerSelectionChanged += OnExplorerSelectionChanged;
+            
             if (!IsDesignMode())
             {
                 // If we're running inside a designer we don't want to track explorer selection.
-                // Otherwise WPF Designer might crash or case deadlocks
-                this.explorerObserver.StartObserver();
+                // Otherwise WPF Designer might crash or cause deadlocks
+                try
+                {
+                    this.explorerMonitor.StartMonitor();
+                }
+                catch(Exception ex)
+                {
+                    System.Windows.MessageBox.Show($"Failed to start Explorer Monitor with error: {ex}", "Error", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
+                }
             }
 
             this.ErrorMessage = "Nothing to preview";
@@ -86,6 +97,8 @@ namespace Glimpse.ViewModels
             previews.Add(new Previews.TextPreviewModel());
             previews.Add(new Previews.RtfPreviewModel());
             previews.Add(new Previews.VideoPreviewModel());
+            previews.Add(new Previews.MarkdownPreviewModel());
+            previews.Add(new Previews.HtmlPreviewModel());
             previews.Add(new Previews.DirectoryPreviewModel());
             previews.Add(new Previews.LocalDrivePreviewModel());
 
@@ -113,6 +126,19 @@ namespace Glimpse.ViewModels
             }
         }
 
+        public void ShowPreview(IntPtr hWnd)
+        {
+            ResetErrorState();
+            string fileToPreview = null;
+
+            if (GetExplorerSelectedItemPath(hWnd, ref fileToPreview))
+            {
+                // TODO multiselect
+                DisplayFile(fileToPreview);
+            }
+        }
+
+
         private void ResetErrorState()
         {
             this.ErrorMessage = null;
@@ -120,12 +146,23 @@ namespace Glimpse.ViewModels
 
         private void SingleInstanceApplication_CommandReceived(object sender, string[] e)
         {
-            ShowPreview(e);
+            MainDispatcher.InvokeAsync(() => {
+                ShowPreview(e);
+            });
         }
 
-        void explorerObserver_ExplorerSelectionChanged(object sender, string[] e)
+        private void OnExplorerWindowGotFocus(object sender, ExplorerMonitorEventArgs e)
         {
-            ShowPreview(e);
+            MainDispatcher.InvokeAsync(() => {
+                ShowPreview(e.ExplorerWindowHandle);
+            });
+        }
+
+        private void OnExplorerSelectionChanged(object sender, ExplorerMonitorEventArgs e)
+        {
+            MainDispatcher.InvokeAsync(() => {
+                ShowPreview(e.ExplorerWindowHandle);
+            });
         }
 
         private bool GetPreviewFileFromCommandLine(string[] args, ref string fileToPreview)
@@ -163,7 +200,7 @@ namespace Glimpse.ViewModels
         {
             try
             {
-                string[] items = ExplorerAdapter.GetSelectedItems(hwnd);
+                string[] items = explorer.GetSelectedItems(hwnd);
 
                 if (items == null || items.Length == 0)
                 {
@@ -196,7 +233,7 @@ namespace Glimpse.ViewModels
                 if (preview.CanCreatePreview(item))
                 {
                     // set preview view in main thread
-                    MainDispatcher.Invoke(() =>
+                    MainDispatcher.InvokeAsync(() =>
                         {
                             this.CurrentPreviewModel = preview;
                             preview.ShowPreview(item);

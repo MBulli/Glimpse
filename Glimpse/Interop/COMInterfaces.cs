@@ -23,27 +23,27 @@ namespace Glimpse.Interop
     [ComImport, InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
     internal interface IPreviewHandler
     {
-        void SetWindow(IntPtr hwnd, ref RECT rect);
-        void SetRect(ref RECT rect);
-        void DoPreview();
-        void Unload();
-        void SetFocus();
-        void QueryFocus(out IntPtr phwnd);
+        int SetWindow(IntPtr hwnd, ref RECT rect);
+        int SetRect(ref RECT rect);
+        int DoPreview();
+        int Unload();
+        int SetFocus();
+        int QueryFocus(out IntPtr phwnd);
         [PreserveSig]
-        uint TranslateAccelerator(ref Message pmsg);
+        int TranslateAccelerator(ref Message pmsg);
     }
 
     [Guid("B7D14566-0509-4CCE-A71F-0A554233BD9B")]
     [ComImport, InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
     internal interface IInitializeWithFile
     {
-        void Initialize([MarshalAs(UnmanagedType.LPWStr)] string pszFilePath, uint grfMode);
+        int Initialize([MarshalAs(UnmanagedType.LPWStr)] string pszFilePath, uint grfMode);
     }
 
     [Guid("B824B49D-22AC-4161-AC8A-9916E8FA3F7F")]
     [ComImport, InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
     internal interface IInitializeWithStream
     {
-        void Initialize(IStream pstream, uint grfMode);
+        int Initialize(IStream pstream, uint grfMode);
     }
 }
