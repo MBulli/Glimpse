@@ -102,6 +102,7 @@ namespace Glimpse.Views
         {
             this.mediaElement.Play();
             this.currentMediaState = MediaState.Play;
+            this.PlaybackState = MediaState.Play;
             this.seekTimer.IsEnabled = true;
 
             UpdateUIElements();
