@@ -19,6 +19,9 @@
         <CommandBinding Command="MediaCommands.TogglePlayPause" Executed="TogglePlayPauseCommandExecuted" />
         <CommandBinding Command="MediaCommands.MuteVolume" Executed="MuteVolumeCommandExecuted" />
     </UserControl.CommandBindings>
+    <UserControl.InputBindings>
+        <KeyBinding Key="Space" Command="MediaCommands.TogglePlayPause" />
+    </UserControl.InputBindings>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="40"/>
@@ -55,7 +58,7 @@
                 </Image.Style>
             </Image>
         </Button>
-        <Slider Name="seekbar" Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" Thumb.DragStarted="seekBar_DragStarted" Thumb.DragCompleted="seekBar_DragCompleted" Thumb.DragDelta="seekBar_DragDelta" />
+        <Slider Name="seekbar" Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" IsMoveToPointEnabled="True" Thumb.DragStarted="seekBar_DragStarted" Thumb.DragCompleted="seekBar_DragCompleted" Thumb.DragDelta="seekBar_DragDelta" ValueChanged="seekbar_ValueChanged" />
         <TextBlock Name="timeLabel" Text="00:00 / 00:00" Grid.Row="1" Grid.Column="2" VerticalAlignment="Center" />
         <Button Name="muteSoundButton" Grid.Row="1" Grid.Column="3" Command="MediaCommands.MuteVolume" Padding="10">
             <Image>

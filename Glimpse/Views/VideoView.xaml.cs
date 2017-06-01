@@ -35,7 +35,7 @@ namespace Glimpse.Views
 
         private MediaState currentMediaState = MediaState.Pause;
         private DispatcherTimer seekTimer;
-
+        private bool resumePlaybackAfterSeekBarDrag = false;
 
         public Uri Source
         {
@@ -175,6 +175,7 @@ namespace Glimpse.Views
 
                 this.seekbar.Maximum = duration.TotalMilliseconds;
                 this.seekbar.Value = position.TotalMilliseconds;
+                this.seekbar.LargeChange = this.seekbar.Value * 0.5;
 
                 this.timeLabel.Text = string.Format(@"{0} / {1}", FormatTimeSpan(position), FormatTimeSpan(duration));
             }
@@ -225,17 +226,28 @@ namespace Glimpse.Views
 
         private void seekBar_DragStarted(object sender, System.Windows.Controls.Primitives.DragStartedEventArgs e)
         {
-            
+            resumePlaybackAfterSeekBarDrag = PlaybackState == MediaState.Play;
+            mediaElement.Pause();
+            mediaElement.ScrubbingEnabled = true;
         }
 
         private void seekBar_DragCompleted(object sender, System.Windows.Controls.Primitives.DragCompletedEventArgs e)
         {
-
+            mediaElement.ScrubbingEnabled = false;
+            if (resumePlaybackAfterSeekBarDrag)
+            {
+                mediaElement.Play();
+            }
         }
 
         private void seekBar_DragDelta(object sender, System.Windows.Controls.Primitives.DragDeltaEventArgs e)
         {
+            mediaElement.Position = TimeSpan.FromMilliseconds(seekbar.Value);
+        }
 
+        private void seekbar_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            mediaElement.Position = TimeSpan.FromMilliseconds(seekbar.Value);
         }
 
         #region DP value change callbacks
@@ -254,13 +266,12 @@ namespace Glimpse.Views
         {
 
         }
+
+
+
+
+
+
         #endregion
-
-        
-
-
-
-
-
     }
 }
