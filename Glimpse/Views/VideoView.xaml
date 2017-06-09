@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:c="clr-namespace:Glimpse.Views.Converter"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
@@ -33,12 +34,28 @@
             <RowDefinition Height="276*"/>
             <RowDefinition Height="40"/>
         </Grid.RowDefinitions>
+             
+        <StackPanel Grid.ColumnSpan="4">
+            <Border VerticalAlignment="Top"
+                    Background="{DynamicResource {x:Static SystemColors.InfoBrushKey}}"
+                    BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}"
+                    BorderThickness="1"
+                    Visibility="{Binding ErrorMessage, ElementName=userControl, Converter={c:NullToVisibilityConverter}}">
+                <TextBox IsReadOnly="True" 
+                         Text="{Binding ErrorMessage, ElementName=userControl}" 
+                         Foreground="{DynamicResource {x:Static SystemColors.InfoTextBrushKey}}" 
+                         Background="{x:Null}" 
+                         BorderBrush="{x:Null}" 
+                         BorderThickness="0"
+                         VerticalAlignment="Center" 
+                         Margin="8" />
+            </Border>
 
-        <Grid Grid.ColumnSpan="4">
             <MediaElement x:Name="mediaElement" Source="{Binding Source}" 
                           MediaOpened="mediaElement_MediaOpened"
-                          MediaEnded="mediaElement_MediaEnded"/>
-        </Grid>
+                          MediaEnded="mediaElement_MediaEnded" 
+                          MediaFailed="mediaElement_MediaFailed" />
+        </StackPanel>
 
         <Button Name="playPauseButton" Grid.Row="1" Command="MediaCommands.TogglePlayPause" Padding="10" >
             <Image>
@@ -53,13 +70,12 @@
                             </DataTrigger>
                         </Style.Triggers>
                         <Setter Property="Source" Value="{StaticResource MediaStatePlayImage}" />
-                        <!-- TODO: DataTrigger, but how to bind? -->
                     </Style>
                 </Image.Style>
             </Image>
         </Button>
-        <Slider Name="seekbar" Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" IsMoveToPointEnabled="True" Thumb.DragStarted="seekBar_DragStarted" Thumb.DragCompleted="seekBar_DragCompleted" Thumb.DragDelta="seekBar_DragDelta" ValueChanged="seekbar_ValueChanged" />
-        <TextBlock Name="timeLabel" Text="00:00 / 00:00" Grid.Row="1" Grid.Column="2" VerticalAlignment="Center" />
+        <Slider Name="seekbar" Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" IsMoveToPointEnabled="True" Thumb.DragStarted="seekBar_DragStarted" Thumb.DragCompleted="seekBar_DragCompleted" Thumb.DragDelta="seekBar_DragDelta" ValueChanged="seekbar_ValueChanged" Margin="8,0" />
+        <TextBlock Name="timeLabel" Text="00:00 / 00:00" Grid.Row="1" Grid.Column="2" VerticalAlignment="Center" Margin="0,0,8,0" />
         <Button Name="muteSoundButton" Grid.Row="1" Grid.Column="3" Command="MediaCommands.MuteVolume" Padding="10">
             <Image>
                 <Image.Style>

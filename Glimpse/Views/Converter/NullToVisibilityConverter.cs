@@ -21,9 +21,9 @@ namespace Glimpse.Views.Converter
         public override object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             if (Inverted)
-                return value != null ? System.Windows.Visibility.Hidden : System.Windows.Visibility.Visible;
+                return value != null ? System.Windows.Visibility.Collapsed : System.Windows.Visibility.Visible;
             else
-                return value == null ? System.Windows.Visibility.Hidden : System.Windows.Visibility.Visible;
+                return value == null ? System.Windows.Visibility.Collapsed : System.Windows.Visibility.Visible;
         }
 
         public override object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)

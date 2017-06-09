@@ -33,6 +33,12 @@ namespace Glimpse.Views
             DependencyProperty.Register("IsSoundMuted", typeof(bool), typeof(VideoView),
                                         new PropertyMetadata(false, OnIsSoundMutedChanged));
 
+        public static readonly DependencyProperty ErrorMessageProperty =
+            DependencyProperty.Register("ErrorMessage", typeof(string), typeof(VideoView), 
+                                        new PropertyMetadata(null));
+
+
+
         private MediaState currentMediaState = MediaState.Pause;
         private DispatcherTimer seekTimer;
         private bool resumePlaybackAfterSeekBarDrag = false;
@@ -54,13 +60,20 @@ namespace Glimpse.Views
             get { return (bool)GetValue(IsSoundMutedProperty); }
             set { SetValue(IsSoundMutedProperty, value); }
         }
-     
+
+        public string ErrorMessage
+        {
+            get { return (string)GetValue(ErrorMessageProperty); }
+            set { SetValue(ErrorMessageProperty, value); }
+        }
+
         public VideoView()
         {
             InitializeComponent();
 
             this.mediaElement.LoadedBehavior = MediaState.Manual;
             this.mediaElement.UnloadedBehavior = MediaState.Stop;
+            mediaElement.ScrubbingEnabled = true;
 
             this.seekTimer = new DispatcherTimer();
             this.seekTimer.Interval = TimeSpan.FromSeconds(0.5);
@@ -93,6 +106,7 @@ namespace Glimpse.Views
 
         public void Open(Uri file)
         {
+            this.ErrorMessage = null;
             this.mediaElement.LoadedBehavior = MediaState.Manual;
             this.mediaElement.UnloadedBehavior = MediaState.Manual;
             this.mediaElement.Source = file;
@@ -199,6 +213,16 @@ namespace Glimpse.Views
             UpdateUIElements();
         }
 
+        private void mediaElement_MediaFailed(object sender, ExceptionRoutedEventArgs e)
+        {
+            const string msg = "Failed to load media.Playback not possible or limited.";
+
+            if (e.ErrorException.InnerException == null)
+                this.ErrorMessage = $"{msg} ({e.ErrorException.Message})";
+            else
+                this.ErrorMessage = $"{msg} ({e.ErrorException.Message}; {e.ErrorException.InnerException.Message})";
+        }
+
         private void PlayCommandExecuted(object sender, ExecutedRoutedEventArgs e)
         {
             Play();
@@ -228,12 +252,10 @@ namespace Glimpse.Views
         {
             resumePlaybackAfterSeekBarDrag = PlaybackState == MediaState.Play;
             mediaElement.Pause();
-            mediaElement.ScrubbingEnabled = true;
         }
 
         private void seekBar_DragCompleted(object sender, System.Windows.Controls.Primitives.DragCompletedEventArgs e)
         {
-            mediaElement.ScrubbingEnabled = false;
             if (resumePlaybackAfterSeekBarDrag)
             {
                 mediaElement.Play();
@@ -273,5 +295,6 @@ namespace Glimpse.Views
 
 
         #endregion
+
     }
 }
